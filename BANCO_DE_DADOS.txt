@@ -1,0 +1,162 @@
+create database SGP;
+
+create table TIPO_USUARIO (
+	ID INTEGER not null primary key,
+	TIPO VARCHAR(20) not null
+);
+
+create table SERVICOS (
+	ID INTEGER not null primary key,
+	TIPO VARCHAR(20) not null
+);
+
+create table SECRETARIAS (
+	ID INTEGER not null primary key,
+	NOME VARCHAR(20) not null
+);
+
+create table ESTADOS (
+	ID INTEGER not null primary key,
+	NOME VARCHAR(20) not null,
+	SIGLA VARCHAR(2) not null
+);
+
+create table USUARIOS (
+	ID INTEGER not null primary key auto_increment,
+	NOME VARCHAR(50) not null,
+	SOBRENOME VARCHAR(50) not null,
+	EMAIL VARCHAR(50) not null,
+	CPF VARCHAR(11) not null,
+	ENDERECO VARCHAR(100) not null,
+	NUMERO INTEGER,
+	COMPLEMENTO VARCHAR(50),
+	CEP VARCHAR(8) not null,
+	BAIRRO VARCHAR(30) not null,
+	CIDADE VARCHAR(30) not null,
+	ESTADO INTEGER not null,
+	TELEFONE VARCHAR(11),
+	CELULAR VARCHAR(11),
+	SENHA VARCHAR(50) not null,
+	TIPO INTEGER not null,
+	DATA_REGISTRO TIMESTAMP not null,
+	CONSTRAINT USUARIOS_FK1 FOREIGN KEY (TIPO) REFERENCES TIPO_USUARIO(ID),
+	CONSTRAINT USUARIOS_FK2 FOREIGN KEY (ESTADO) REFERENCES ESTADOS(ID)
+);
+
+create table SOLICITACOES (
+	ID INTEGER not null primary key auto_increment,
+	USUARIO INTEGER not null,
+	SERVICO INTEGER not null,
+	ENDERECO VARCHAR(100) not null,
+	INFO_ADICIONAL VARCHAR(500),
+	DATA TIMESTAMP not null,
+	CONSTRAINT SOLICITACOES_FK1 FOREIGN KEY (USUARIO) REFERENCES USUARIOS(ID),
+	CONSTRAINT SOLICITACOES_FK2 FOREIGN KEY (SERVICO) REFERENCES SERVICOS(ID)
+);
+
+create table CONSULTAS (
+	ID INTEGER not null primary key auto_increment,
+	USUARIO INTEGER not null,
+	SECRETARIA INTEGER not null,
+	ASSUNTO VARCHAR(50) not null,
+	DATA_PEDIDO TIMESTAMP not null,
+	DATA_AGENDADA  VARCHAR(50) not null,
+	CONSTRAINT CONSULTAS_FK1 FOREIGN KEY (USUARIO) REFERENCES USUARIOS(ID),
+	CONSTRAINT CONSULTAS_FK2 FOREIGN KEY (SECRETARIA) REFERENCES SECRETARIAS(ID)
+);
+
+create table ELOGIOS (
+	ID INTEGER not null primary key auto_increment,
+	USUARIO INTEGER not null,
+	SECRETARIA INTEGER not null,
+	MENSAGEM VARCHAR(500) not null,
+	DATA TIMESTAMP not null,
+	CONSTRAINT ELOGIOS_FK1 FOREIGN KEY (USUARIO) REFERENCES USUARIOS(ID),
+	CONSTRAINT ELOGIOS_FK2 FOREIGN KEY (SECRETARIA) REFERENCES SECRETARIAS(ID)
+);
+
+create table RECLAMACOES (
+	ID INTEGER not null primary key auto_increment,
+	USUARIO INTEGER not null,
+	SECRETARIA INTEGER not null,
+	MENSAGEM VARCHAR(500) not null,
+	DATA TIMESTAMP not null,
+	CONSTRAINT RECLAMACOES_FK1 FOREIGN KEY (USUARIO) REFERENCES USUARIOS(ID),
+	CONSTRAINT RECLAMACOES_FK2 FOREIGN KEY (SECRETARIA) REFERENCES SECRETARIAS(ID)
+);
+
+INSERT INTO TIPO_USUARIO VALUES
+	(1,'Administrador'),
+	(2,'Funcionário'),
+	(3,'Usuário');
+
+INSERT INTO SERVICOS VALUES
+	(1,'Outros'),
+	(2,'Animais'),
+	(3,'Áreas Municipais'),
+	(4,'Árvores'),
+	(5,'Entulho'),
+	(6,'Esgoto'),
+	(7,'Lixeira'),
+	(8,'Reforma'),
+	(9,'Semáforo'),
+	(10,'Sinalização'),
+	(11,'Vias Públicas');
+
+INSERT INTO SECRETARIAS VALUES
+	(1,'Administração'),
+	(2,'Comunicação Social'),
+	(3,'Cultura e Turismo'),
+	(4,'Desenvolvimento'),
+	(5,'Educação'),
+	(6,'Esporte e Lazer'),
+	(7,'Finanças'),
+	(8,'Governo'),
+	(9,'Habitação'),
+	(10,'Meio Ambiente'),
+	(11,'Obras'),
+	(12,'Planejamento'),
+	(13,'Promoção Social'),
+	(14,'Saúde'),
+	(15,'Segurança Pública'),
+	(16,'Serviços Urbanos'),
+	(17,'Trânsito'),
+	(18,'Transportes'),
+	(19,'Urbanismo');
+
+INSERT INTO ESTADOS VALUES
+	(1,'Acre','AC'),
+	(2,'Alagoas','AL'),
+	(3,'Amapá','AP'),
+	(4,'Amazonas','AM'),
+	(5,'Bahia','BA'),
+	(6,'Ceará','CE'),
+	(7,'Distrito Federal','DF'),
+	(8,'Espírito Santo','ES'),
+	(9,'Goiás','GO'),
+	(10,'Maranhão','MA'),
+	(11,'Mato Grosso','MT'),
+	(12,'Mato Grosso do Sul','MS'),
+	(13,'Minas Gerais','MG'),
+	(14,'Pará','PA'),
+	(15,'Paraíba','PB'),
+	(16,'Paraná','PR'),
+	(17,'Pernambuco','PE'),
+	(18,'Piauí','PI'),
+	(19,'Rio de Janeiro','RJ'),
+	(20,'Rio Grande do Norte','RN'),
+	(21,'Rio Grande do Sul','RS'),
+	(22,'Rondônia','RO'),
+	(23,'Roraima','RR'),
+	(24,'Santa Catarina','SC'),
+	(25,'São Paulo','SP'),
+	(26,'Sergipe','SE'),
+	(27,'Tocantins','TO');
+
+INSERT INTO USUARIOS 
+	(NOME, SOBRENOME, EMAIL, CPF, ENDERECO, CEP, BAIRRO, CIDADE, ESTADO, SENHA, TIPO, DATA_REGISTRO)
+	VALUES	
+	('ANÔNIMO',' ',' ',' ',' ',' ',' ',' ',1,'0123456789',3,'2015-04-20 00:00:00'),
+	('Carlos Eduardo','Ribeiro dos Santos','edsx13@gmail.com','12345678900',' ','12345678',' ',' ',25,'123456',1,'2015-04-20 00:00:00'),
+	('Felipe','Chioro','felipe.chioro@gmail.com','12345678900',' ','12345678',' ',' ',25,'123456',1,'2015-04-20 00:00:00'),
+	('Gustavo','Cavalheiro','gustavo.g.cavalheiro@gmail.com','12345678900',' ','12345678',' ',' ',25,'123456',1,'2015-04-20 00:00:00');
