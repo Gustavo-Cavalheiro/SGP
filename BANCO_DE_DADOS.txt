@@ -159,4 +159,5 @@ INSERT INTO USUARIOS
 	('ANÔNIMO',' ',' ',' ',' ',' ',' ',' ',1,'0123456789',3,'2015-04-20 00:00:00'),
 	('Carlos Eduardo','Ribeiro dos Santos','edsx13@gmail.com','12345678900',' ','12345678',' ',' ',25,'123456',1,'2015-04-20 00:00:00'),
 	('Felipe','Chioro','felipe.chioro@gmail.com','12345678900',' ','12345678',' ',' ',25,'123456',1,'2015-04-20 00:00:00'),
-	('Gustavo','Cavalheiro','gustavo.g.cavalheiro@gmail.com','12345678900',' ','12345678',' ',' ',25,'123456',1,'2015-04-20 00:00:00');
+	('Gustavo','Cavalheiro','gustavo.g.cavalheiro@gmail.com','12345678900',' ','12345678',' ',' ',25,'123456',1,'2015-04-20 00:00:00'),
+	('Rodrigo','Salgado','rodrigo@fatecpg.com.br','12345678900',' ','12345678',' ',' ',25,'123456',1,'2015-04-20 00:00:00');
