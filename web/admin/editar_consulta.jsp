@@ -107,7 +107,6 @@
                             // Populando o elemento select com os dados da tabela SECRETARIAS
                             try {
                                 String query = "SELECT * FROM SECRETARIAS";
-                                secretaria = request.getParameter("secretaria");
                                 for (Object[] reg : Conexao.getQuery(query)) {
                                     String selected = "";
                                     if (secretaria != null && secretaria.equals(reg[0].toString())) {
@@ -122,35 +121,37 @@
                     </select><br><br>
                     <label class="secretariaobs">Selecione o assunto:</label> <span class="obrigatorio">*</span><br>
                     <select id="assunto" name="assunto" class="secretariaobs">
+                        <option><%=assunto%></option>
                         <option>Atestados e Declaracoes</option>
                         <option>Duvidas</option>
                         <option>Emergencias</option>
                         <option>Planejamento</option>
                         <option>Servicos</option>
                         <option>Social</option>
+                        
                     </select><br><br>
                     <span class="secretariaobs">Selecione uma data e horário disponível:<span class="obrigatorio">*</span></span><br>
                     <select id="horario" name="data" class="secretariaobs">
                         <%
                             Calendar date = Calendar.getInstance();
-                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  09:00:00");
-                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  10:00:00");
-                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  11:00:00");
-                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  14:00:00");
-                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  15:00:00");
-                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  16:00:00");
-                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  09:00:00");
-                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  10:00:00");
-                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  11:00:00");
-                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  14:00:00");
-                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  15:00:00");
-                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  16:00:00");
-                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  09:00:00");
-                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  10:00:00");
-                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  11:00:00");
-                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  14:00:00");
-                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  15:00:00");
-                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.YEAR) + "  16:00:00");
+                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  09:00:00");
+                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  10:00:00");
+                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  11:00:00");
+                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  14:00:00");
+                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  15:00:00");
+                            out.println("<option> 10/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  16:00:00");
+                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  09:00:00");
+                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  10:00:00");
+                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  11:00:00");
+                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  14:00:00");
+                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  15:00:00");
+                            out.println("<option> 20/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  16:00:00");
+                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  09:00:00");
+                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  10:00:00");
+                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  11:00:00");
+                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  14:00:00");
+                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  15:00:00");
+                            out.println("<option> 30/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  16:00:00");
                         %>
                     </select><br><br>
                     <input type="submit" class="botao" value="Enviar">

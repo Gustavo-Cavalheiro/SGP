@@ -41,13 +41,12 @@
                         if (result.size() > 0) {
                             texto += "<table class='tabela'>";
                             texto += "<th></th><th></th>";
-                            texto += "<th>ID</th> <th>USUÁRIO</th> <th>E-MAIL</th> <th>CPF</th> <th>SECRETARIA</th> <th>MENSAGEM</th> <th>DATA DO ELOGIO</th>";
+                            texto += "<th>USUÁRIO</th> <th>E-MAIL</th> <th>CPF</th> <th>SECRETARIA</th> <th>MENSAGEM</th> <th>DATA DO ELOGIO</th>";
                             for (Object[] reg : result) {
                                 Date date = (Date) reg[6];
                                 texto += "<tr>";
                                 texto += "<td><a href='?delete&ID=" + reg[0] + "'><img src='../_imagens/excluir.png' alt='excluir' onmouseover='Tip(\"Excluir\")' onmouseout='UnTip()'></a></td>";
                                 texto += "<td><a href='editar_elogio.jsp?ID=" + reg[0] + "'><img src='../_imagens/editar.png' alt='editar' onmouseover='Tip(\"Editar\")' onmouseout='UnTip()'></a></td>";
-                                texto += "<td>" + reg[0] + "</td>";
                                 texto += "<td>" + reg[1] + "</td>";
                                 texto += "<td>" + reg[2] + "</td>";
                                 texto += "<td>" + reg[3] + "</td>";

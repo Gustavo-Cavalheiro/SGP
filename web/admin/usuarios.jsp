@@ -45,9 +45,7 @@
                             texto += "<table class='tabela'>";
                             texto += "<th></th><th></th>"
                                     + "<th>ID</th> <th>NOME</th> <th>SOBRENOME</th> <th>E-MAIL</th> <th>CPF</th>"
-                                    + "<th>ENDEREÇO</th> <th>NÚMERO</th> <th>COMPLEMENTO</th> <th>CEP</th> "
-                                    + "<th>BAIRRO</th> <th>CIDADE</th> <th>ESTADO</th> <th>TELEFONE</th> "
-                                    + "<th>CELULAR</th> <th>TIPO</th> <th>DATA DE REGISTRO</th>";
+                                    +"<th>TIPO</th>";
                             for (Object[] reg : result) {
                                 Date date = (Date) reg[15];
                                 texto += "<tr>";
@@ -58,17 +56,7 @@
                                 texto += "<td>" + reg[2] + "</td>";
                                 texto += "<td>" + reg[3] + "</td>";
                                 texto += "<td>" + reg[4] + "</td>";
-                                texto += "<td>" + reg[5] + "</td>";
-                                texto += "<td>" + reg[6] + "</td>";
-                                texto += "<td>" + reg[7] + "</td>";
-                                texto += "<td>" + reg[8] + "</td>";
-                                texto += "<td>" + reg[9] + "</td>";
-                                texto += "<td>" + reg[10] + "</td>";
-                                texto += "<td>" + reg[11] + "</td>";
-                                texto += "<td>" + reg[12] + "</td>";
-                                texto += "<td>" + reg[13] + "</td>";
                                 texto += "<td>" + reg[14] + "</td>";
-                                texto += "<td>" + date.toLocaleString() + "</td>";
                                 texto += "</tr>";
                             }
                             texto += "</table>";

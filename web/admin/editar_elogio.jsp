@@ -1,3 +1,5 @@
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Timestamp"%>
@@ -12,14 +14,17 @@
     <body>
         <%
             // Declaração da variável que conterá as possíveis mensagens de erro
+            String id = "";
+            String secretaria = "";
+            String elogio = "";
             String mensagem = "";
 
             // Verificando se existem parametros para inserir na tabela ELOGIOS
             if (request.getParameter("inserir") != null) {
                 // Pegando os parametros e removendo espaços desnecessários
-                String usuario = request.getParameter("id");
-                String secretaria = request.getParameter("secretaria");
-                String elogio = request.getParameter("mensagem").trim();
+                id = request.getParameter("id");
+                secretaria = request.getParameter("secretaria");
+                elogio = request.getParameter("mensagem").trim();
 
                 // Verificando se o usuário deixou vazio o campo mensagem
                 if (elogio.equals("")) {
@@ -27,15 +32,14 @@
                 } else {
                     try {
                         // Inserindo os dados na tabela ELOGIOS
-                        String SQL = "INSERT INTO ELOGIOS ";
-                        SQL += "(USUARIO, SECRETARIA, MENSAGEM, DATA) ";
-                        SQL += "VALUES (?,?,?,?)";
+                        String SQL = "UPDATE ELOGIOS SET ";
+                        SQL += "SECRETARIA=?, MENSAGEM=? ";
+                        SQL += "WHERE ID=?";
                         Connection con = Conexao.getConnection();
                         PreparedStatement ps = con.prepareStatement(SQL);
-                        ps.setInt(1, Integer.parseInt(usuario));
-                        ps.setInt(2, Integer.parseInt(secretaria));
-                        ps.setString(3, elogio);
-                        ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+                        ps.setInt(1, Integer.parseInt(secretaria));
+                        ps.setString(2, elogio);
+                        ps.setInt(3, Integer.parseInt(id));
                         ps.execute();
                         ps.close();
 
@@ -45,6 +49,20 @@
                     } catch (Exception ex) {
                         mensagem = "ERRO: " + ex.getLocalizedMessage();
                     }
+                }
+             } else if (request.getParameter("ID") != null && request.getParameter("ID") != "") {
+                //Pegando os dados do usuário da tabela "USUARIOS" de acordo com o parâmetro "ID"
+                try {
+                    id = request.getParameter("ID");
+                    String SQL = "SELECT * FROM ELOGIOS WHERE ID = " + id;
+                    Statement stmt = Conexao.getConnection().createStatement();
+                    ResultSet rs = stmt.executeQuery(SQL);
+                    rs.next();
+                    id = rs.getString("id");
+                    secretaria = rs.getString("SECRETARIA");
+                    elogio = rs.getString("MENSAGEM");
+                } catch (Exception ex) {
+                    mensagem = "ERRO: " + ex.getLocalizedMessage();
                 }
             }
         %>
@@ -67,15 +85,13 @@
                 <span class="obrigatorio2">*Campos obrigatórios.</span><br><br>
                 <form method="POST" action="">
                     <input type="hidden" name="inserir">
-                    <input type='hidden' name='id' value='<%=session.getAttribute("id")%>'>
-                    <label class="secretariaobs">Nome:</label><br>
+                    <input type='hidden' name='id' value='<%=id%>'>
                     <label class="secretariaobs">Selecione a secretaria:</label> <span class="obrigatorio">*</span><br>
                     <select id="secretaria" name="secretaria" class="secretariaobs">
                         <%
                             // Populando o elemento select com os dados da tabela SECRETARIAS
                             try {
                                 String query = "SELECT * FROM SECRETARIAS";
-                                String secretaria = request.getParameter("secretaria");
                                 for (Object[] reg : Conexao.getQuery(query)) {
                                     String selected = "";
                                     if (secretaria != null && secretaria.equals(reg[0].toString())) {
@@ -89,7 +105,7 @@
                         %>
                     </select><br><br>
                     <label class="secretariaobs">Mensagem:</label> <span class="obrigatorio">*</span><br>
-                    <textarea name="mensagem" cols="50" rows="10"></textarea><br><br>
+                    <textarea name="mensagem" cols="50" rows="10"><%=elogio%></textarea><br><br>
                     <input type="submit" class="botao" value="Enviar">
                     <input type="reset" class="botao" value="Limpar">
                 </form>
