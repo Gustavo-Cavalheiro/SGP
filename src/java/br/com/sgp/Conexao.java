@@ -10,8 +10,8 @@ public class Conexao {
 
     public static Connection getConnection() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        String url = "jdbc:mysql://localhost:3306/sgp";
-        return DriverManager.getConnection(url, "root", "1234");
+        String url = "jdbc:mysql://localhost:3306/sgp", user = "root", pass = "1234";
+        return DriverManager.getConnection(url, user, pass);
     }
 
     public static int executeStatement(String SQL) throws Exception {

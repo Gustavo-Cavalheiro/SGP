@@ -4,7 +4,8 @@
 <%@page import="java.sql.Timestamp"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<% // Verificando se usuário já está logado, caso positivo redireciona para index
+<%request.setCharacterEncoding("UTF-8");
+    // Verificando se usuário já está logado, caso positivo redireciona para index
     if (session.getAttribute("username") != null) {
         response.sendRedirect(request.getContextPath());
         return;
@@ -70,7 +71,7 @@
                         mensagem += " são de preenchimento obrigatório.";
                     }
 
-                    // Verificando se os campos "Senha" e "Confirmar Senha" são iguais    
+                    // Verificando se os campos "Senha" e "Confirmar Senha" são iguais
                 } else if (!senha.equals(senha2)) {
                     mensagem = "As senhas digitadas são diferentes.";
 

@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<% // Verificando se usuário já está logado, caso positivo redireciona para index
+<%request.setCharacterEncoding("UTF-8");
+    // Verificando se usuário já está logado, caso positivo redireciona para index
     if (session.getAttribute("username") != null) {
         response.sendRedirect(request.getContextPath());
         return;

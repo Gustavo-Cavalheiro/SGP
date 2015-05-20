@@ -5,6 +5,13 @@
 <%@page import="java.sql.Timestamp"%>
 <%@page import="java.util.Calendar"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%request.setCharacterEncoding("UTF-8");
+    // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
+    if (session.getAttribute("username") == null || session.getAttribute("tipo") == null || !session.getAttribute("tipo").toString().equals("1")) {
+        response.sendRedirect(request.getContextPath());
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,7 +21,6 @@
     </head>
     <body>
         <%
-            // Declaração da variável que conterá as possíveis mensagens de erro
             String mensagem = "";
 
             // Declaração das variáveis que vão armazenar os dados da consulta
@@ -78,10 +84,10 @@
 
             } else {
                 // Se o parâmetro ID não for encontrado redireciona para a página de usuários cadastrados
-                //response.sendRedirect(request.getContextPath() + "/admin/consultas.jsp");
+                response.sendRedirect(request.getContextPath() + "/admin/consultas.jsp");
                 return;
             }
-        %>
+            %>
         <div id="conteudo-container">
             <%@include file="../_templates/header.jsp"%>
             <%@include file="../_templates/menu.jsp"%>
@@ -98,7 +104,7 @@
                     if (!mensagem.equals("")) out.println("<span style='color:red;'>" + mensagem + "</span><br><br>");
                 %>
                 <span class="obrigatorio2">*Campos obrigatórios.</span><br><br>
-                <form method="get" action="">
+                <form method="post" action="">
                     <input type="hidden" name="update">
                     <input type='hidden' name='id' value='<%=id%>'>
                     <label class="secretariaobs">Selecione a secretaria:</label> <span class="obrigatorio">*</span><br>
@@ -121,14 +127,16 @@
                     </select><br><br>
                     <label class="secretariaobs">Selecione o assunto:</label> <span class="obrigatorio">*</span><br>
                     <select id="assunto" name="assunto" class="secretariaobs">
-                        <option><%=assunto%></option>
-                        <option>Atestados e Declaracoes</option>
-                        <option>Duvidas</option>
-                        <option>Emergencias</option>
-                        <option>Planejamento</option>
-                        <option>Servicos</option>
-                        <option>Social</option>
-                        
+                        <%
+                            String[] assuntos = {"Atestados e Declarações", "Dúvidas", "Emergências", "Planejamento", "Serviços", "Social"};
+                            for (int i = 0; i < assuntos.length; ++i) {
+                                if (assuntos[i].equals(assunto)) {
+                                    out.println("<option selected>" + assuntos[i] + "</option>");
+                                } else {
+                                    out.println("<option>" + assuntos[i] + "</option>");
+                                }
+                            }
+                        %>
                     </select><br><br>
                     <span class="secretariaobs">Selecione uma data e horário disponível:<span class="obrigatorio">*</span></span><br>
                     <select id="horario" name="data" class="secretariaobs">

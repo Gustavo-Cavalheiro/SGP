@@ -14,7 +14,7 @@
                 <li><a href="<%=request.getContextPath()%>/admin/adicionar_usuario.jsp">Adicionar Usuário</a></li>
                 <li><a href="<%=request.getContextPath()%>/admin/solicitacoes.jsp">Solicitações de Serviços</a></li>
                 <li><a href="<%=request.getContextPath()%>/admin/consultas.jsp">Consultas Marcadas</a></li>
-                <li><a href="<%=request.getContextPath()%>/admin/reclamacoes.jsp">Reclamacoes</a></li>
+                <li><a href="<%=request.getContextPath()%>/admin/reclamacoes.jsp">Reclamações</a></li>
                 <li><a href="<%=request.getContextPath()%>/admin/elogios.jsp">Elogios</a></li>
             </ul>
         </li>

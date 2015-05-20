@@ -2,6 +2,7 @@
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Timestamp"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%request.setCharacterEncoding("UTF-8");%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,7 +21,7 @@
                 session.removeAttribute("username");
             } else if (session.getAttribute("username") != null) {
                 nome = session.getAttribute("username").toString();
-            }            
+            }
 
             // Declaração da variável que conterá as possíveis mensagens de erro
             String mensagem = "";

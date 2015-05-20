@@ -2,7 +2,8 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<% // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
+<%request.setCharacterEncoding("UTF-8");
+    // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
     if (session.getAttribute("username") == null || session.getAttribute("tipo") == null || !session.getAttribute("tipo").toString().equals("1")) {
         response.sendRedirect(request.getContextPath());
         return;
@@ -21,9 +22,26 @@
             <%@include file="../_templates/menu.jsp"%>
             <div id="containerinterno">
                 <span class="sobre">RECLAMAÇÕES<img src="../_imagens/sobre.png" alt="" onmouseover="Tip('Permite visualizar todas as reclamações cadastradas no sistema')" onmouseout="UnTip()"></span>
-                <br><br>    
+                <br><br>
+                <form action="" method="post">
+                    <span class="secretaria">Pesquisar:</span><br>
+                    <input type="text" name="pesquisa" size="40" value="${param.pesquisa}"/>
+                    <select id="campo" name="campo" class="secretariaobs">
+                        <%
+                            String campo = "";
+                            if (request.getParameter("campo") != null) campo = request.getParameter("campo");
+                        %>
+                        <option value="usuario" <%if (campo.equals("usuario")) out.println("selected");%>>Usuário</option>
+                        <option value="email" <%if (campo.equals("email")) out.println("selected");%>>E-Mail</option>
+                        <option value="cpf" <%if (campo.equals("cpf")) out.println("selected");%>>CPF</option>
+                        <option value="secretaria" <%if (campo.equals("secretaria")) out.println("selected");%>>Secretaria</option>
+                        <option value="mensagem" <%if (campo.equals("mensagem")) out.println("selected");%>>Mensagem</option>
+                    </select>
+                    <input type="submit" value="OK"/>
+                </form>
+                <br>
                 <%
-                    
+
                     if (request.getParameter("delete") != null) {
                         try {
                             Conexao.executeStatement("DELETE FROM RECLAMACOES WHERE ID = " + request.getParameter("ID"));
@@ -31,12 +49,29 @@
                             out.println("<span style='color:red;'>" + ex.getLocalizedMessage() + "</span>");
                         }
                     }
-                
+
                     String texto = "";
                     try {
                         String SQL = "SELECT r.ID, CONCAT(u.NOME,' ',u.SOBRENOME), u.EMAIL, u.CPF, s.NOME, r.MENSAGEM, r.DATA "
                                 + "FROM RECLAMACOES r JOIN USUARIOS u ON (r.USUARIO = u.ID) "
-                                + "JOIN SECRETARIAS s ON (r.SECRETARIA = s.ID) ORDER BY r.ID";
+                                + "JOIN SECRETARIAS s ON (r.SECRETARIA = s.ID)";
+
+                        if (request.getParameter("pesquisa") != null) {
+                            String pesquisa = request.getParameter("pesquisa");
+                            if (campo.equals("usuario")) {
+                                SQL += " WHERE UPPER(u.NOME) LIKE UPPER('%" + pesquisa + "%') OR UPPER(u.SOBRENOME) LIKE UPPER('%" + pesquisa + "%')";
+                            } else if (campo.equals("email")) {
+                                SQL += " WHERE UPPER(u.EMAIL) LIKE UPPER('%" + pesquisa + "%')";
+                            } else if (campo.equals("cpf")) {
+                                SQL += " WHERE UPPER(u.CPF) LIKE UPPER('%" + pesquisa + "%')";
+                            } else if (campo.equals("secretaria")) {
+                                SQL += " WHERE UPPER(s.NOME) LIKE UPPER('%" + pesquisa + "%')";
+                            } else if (campo.equals("mensagem")) {
+                                SQL += " WHERE UPPER(r.MENSAGEM) LIKE UPPER('%" + pesquisa + "%')";
+                            }
+                        }
+                        SQL += " ORDER BY r.ID";
+
                         ArrayList<Object[]> result = Conexao.getQuery(SQL);
                         if (result.size() > 0) {
                             texto += "<table class='tabela'>";
@@ -57,7 +92,11 @@
                             }
                             texto += "</table>";
                         } else {
-                            texto = "<span class='secretariaobs'><b>Não existem reclamações cadastradas no sistema.</b></span><br>";
+                            if (request.getParameter("pesquisa") != null) {
+                                texto = "<span class='secretariaobs'><b>Não existem resultados que satisfaçam a pesquisa.</b></span><br>";
+                            } else {
+                                texto = "<span class='secretariaobs'><b>Não existem reclamações cadastradas no sistema.</b></span><br>";
+                            }
                         }
                     } catch (Exception ex) {
                         texto = "<span style='color:red;'>" + ex.getLocalizedMessage() + "</span>";

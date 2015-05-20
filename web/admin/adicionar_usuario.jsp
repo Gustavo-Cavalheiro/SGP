@@ -4,7 +4,8 @@
 <%@page import="java.sql.Timestamp"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<% // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
+<%request.setCharacterEncoding("UTF-8");
+    // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
     if (session.getAttribute("username") == null || session.getAttribute("tipo") == null || !session.getAttribute("tipo").toString().equals("1")) {
         response.sendRedirect(request.getContextPath());
         return;
@@ -72,11 +73,11 @@
                         mensagem += " são de preenchimento obrigatório.";
                     }
 
-                // Verificando se os campos "Senha" e "Confirmar Senha" são iguais    
+                    // Verificando se os campos "Senha" e "Confirmar Senha" são iguais
                 } else if (!senha.equals(senha2)) {
                     mensagem = "As senhas digitadas são diferentes.";
 
-                // Verificando o tamanho da senha (necessário ao menos 6 caracteres)
+                    // Verificando o tamanho da senha (necessário ao menos 6 caracteres)
                 } else if (senha.length() < 6) {
                     mensagem = "A senha precisa ter no mínimo 6 caracteres.";
 

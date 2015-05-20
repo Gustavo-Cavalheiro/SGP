@@ -3,6 +3,7 @@
 <%@page import="java.sql.Timestamp"%>
 <%@page import="java.util.Calendar"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%request.setCharacterEncoding("UTF-8");%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -67,7 +68,7 @@
                     if (!mensagem.equals("")) out.println("<span style='color:red;'>" + mensagem + "</span><br><br>");
                 %>
                 <span class="obrigatorio2">*Campos obrigatórios.</span><br><br>
-                <form method="get" action="">
+                <form method="post" action="">
                     <input type="hidden" name="inserir">
                     <input type='hidden' name='id' value='<%=session.getAttribute("id")%>'>
                     <label class="secretariaobs">Nome:</label><br>

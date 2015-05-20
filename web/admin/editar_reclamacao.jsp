@@ -4,6 +4,13 @@
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Timestamp"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%request.setCharacterEncoding("UTF-8");
+    // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
+    if (session.getAttribute("username") == null || session.getAttribute("tipo") == null || !session.getAttribute("tipo").toString().equals("1")) {
+        response.sendRedirect(request.getContextPath());
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
     <head>

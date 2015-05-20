@@ -3,7 +3,8 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<% // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
+<%request.setCharacterEncoding("UTF-8");
+    // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
     if (session.getAttribute("username") == null || session.getAttribute("tipo") == null || !session.getAttribute("tipo").toString().equals("1")) {
         response.sendRedirect(request.getContextPath());
         return;
@@ -23,6 +24,23 @@
             <div id="containerinterno">
                 <span class="sobre">USUÁRIOS CADASTRADOS<img src="../_imagens/sobre.png" alt="" onmouseover="Tip('Permite visualizar, alterar e excluir usuários cadastrados no sistema')" onmouseout="UnTip()"></span>
                 <br><br>
+                <form action="" method="post">
+                    <span class="secretaria">Pesquisar:</span><br>
+                    <input type="text" name="pesquisa" size="40" value="${param.pesquisa}"/>
+                    <select id="campo" name="campo" class="secretariaobs">
+                        <%
+                            String campo = "";
+                            if (request.getParameter("campo") != null) campo = request.getParameter("campo");
+                        %>
+                        <option value="nome" <%if (campo.equals("nome")) out.println("selected");%>>Nome</option>
+                        <option value="sobrenome" <%if (campo.equals("sobrenome")) out.println("selected");%>>Sobrenome</option>
+                        <option value="email" <%if (campo.equals("email")) out.println("selected");%>>E-Mail</option>
+                        <option value="cpf" <%if (campo.equals("cpf")) out.println("selected");%>>CPF</option>
+                        <option value="tipo" <%if (campo.equals("tipo")) out.println("selected");%>>Tipo de Usuário</option>
+                    </select>
+                    <input type="submit" value="OK"/>
+                </form>
+                <br>
                 <%
                     // Deleta usuário caso seja encontrado parâmetro "delete" e "id"
                     if (request.getParameter("delete") != null) {
@@ -39,13 +57,24 @@
                         String SQL = "SELECT u.ID, u.NOME, u.SOBRENOME, u.EMAIL, u.CPF, u.ENDERECO, u.NUMERO, u.COMPLEMENTO, "
                                 + "u.CEP, u.BAIRRO, u.CIDADE, e.SIGLA, u.TELEFONE, u.CELULAR, t.TIPO, u.DATA_REGISTRO "
                                 + "FROM USUARIOS u JOIN ESTADOS e ON(u.ESTADO = e.ID) "
-                                + "JOIN TIPO_USUARIO t ON (u.TIPO = t.ID) ORDER BY u.ID";
+                                + "JOIN TIPO_USUARIO t ON (u.TIPO = t.ID)";
+
+                        if (request.getParameter("pesquisa") != null) {
+                            String pesquisa = request.getParameter("pesquisa");
+                            if (campo.equals("tipo")) {
+                                SQL += " WHERE UPPER(u.TIPO) LIKE UPPER('%" + pesquisa + "%') OR UPPER(t.TIPO) LIKE UPPER('%" + pesquisa + "%')";
+                            } else {
+                                SQL += " WHERE UPPER(u." + campo + ") LIKE UPPER('%" + pesquisa + "%')";
+                            }
+                        }
+                        SQL += " ORDER BY u.ID";
+
                         ArrayList<Object[]> result = Conexao.getQuery(SQL);
                         if (result.size() > 0) {
                             texto += "<table class='tabela'>";
                             texto += "<th></th><th></th>"
                                     + "<th>ID</th> <th>NOME</th> <th>SOBRENOME</th> <th>E-MAIL</th> <th>CPF</th>"
-                                    +"<th>TIPO</th>";
+                                    + "<th>TIPO</th>";
                             for (Object[] reg : result) {
                                 Date date = (Date) reg[15];
                                 texto += "<tr>";
@@ -61,7 +90,11 @@
                             }
                             texto += "</table>";
                         } else {
-                            texto = "<span class='secretariaobs'><b>Não existem usuários cadastrados no sistema.</b></span><br>";
+                            if (request.getParameter("pesquisa") != null) {
+                                texto = "<span class='secretariaobs'><b>Não existem resultados que satisfaçam a pesquisa.</b></span><br>";
+                            } else {
+                                texto = "<span class='secretariaobs'><b>Não existem usuários cadastrados no sistema.</b></span><br>";
+                            }
                         }
                     } catch (Exception ex) {
                         texto = "<span style='color:red;'>" + ex.getLocalizedMessage() + "</span>";
