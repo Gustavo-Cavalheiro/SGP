@@ -1,8 +1,10 @@
-<%@page import="java.sql.Connection"%>
-<%@page import="java.sql.PreparedStatement"%>
-<%@page import="java.sql.Timestamp"%>
+<%@page import="sgp.Conexao"%>
+<%@page import="sgp.Elogio"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%request.setCharacterEncoding("UTF-8");%>
+<%
+    request.setCharacterEncoding("UTF-8");
+    Usuario usuario = (Usuario) session.getAttribute("user");
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,56 +14,43 @@
     </head>
     <body>
         <%
-            // Verificando se o usuário prefere enviar a mensagem como anônimo
+            int id = 1;
             String nome = "";
+
+            // Verificando se o usuário prefere enviar a mensagem como anônimo
             if (request.getParameter("anonimo") != null) {
                 nome = "ANÔNIMO";
-                session.setAttribute("id", 1);
-                session.setAttribute("tipo", 3);
-                session.removeAttribute("username");
-            } else if (session.getAttribute("username") != null) {
-                nome = session.getAttribute("username").toString();
+            } else if (usuario != null) {
+                id = usuario.getId();
+                nome = usuario.getNome();
             }
 
             // Declaração da variável que conterá as possíveis mensagens de erro
-            String mensagem = "";
+            String erro = "";
 
             // Verificando se existem parametros para inserir na tabela ELOGIOS
             if (request.getParameter("inserir") != null) {
                 // Pegando os parametros e removendo espaços desnecessários
-                String usuario = request.getParameter("id");
+                String usuario_id = request.getParameter("id");
                 String secretaria = request.getParameter("secretaria");
-                String elogio = request.getParameter("mensagem").trim();
+                String mensagem = request.getParameter("mensagem").trim();
 
                 // Verificando se o usuário deixou vazio o campo mensagem
-                if (elogio.equals("")) {
-                    mensagem = "O campo \"Mensagem\" é de preenchimento obrigatório.";
+                if (mensagem.equals("")) {
+                    erro = "O campo \"Mensagem\" é de preenchimento obrigatório.";
                 } else {
                     try {
-                        // Inserindo os dados na tabela ELOGIOS
-                        String SQL = "INSERT INTO ELOGIOS ";
-                        SQL += "(USUARIO, SECRETARIA, MENSAGEM, DATA) ";
-                        SQL += "VALUES (?,?,?,?)";
-                        Connection con = Conexao.getConnection();
-                        PreparedStatement ps = con.prepareStatement(SQL);
-                        ps.setInt(1, Integer.parseInt(usuario));
-                        ps.setInt(2, Integer.parseInt(secretaria));
-                        ps.setString(3, elogio);
-                        ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-                        ps.execute();
-                        ps.close();
+                        Elogio elogio = new Elogio();
+                        elogio.setUsuario(Integer.parseInt(usuario_id));
+                        elogio.setSecretaria(Integer.parseInt(secretaria));
+                        elogio.setMensagem(mensagem);
+                        elogio.inserir();
 
-                        // Remove variáveis de sessão caso usuário tenha enviado a mensagem como anônimo
-                        if (nome.equals("ANÔNIMO")) {
-                            session.removeAttribute("id");
-                            session.removeAttribute("tipo");
-                        }
-
-                        // Após inserir os dados redireciona para a página de consultas
+                        // Após inserir elogio redireciona para a página de consultas
                         response.sendRedirect(request.getContextPath() + "/consultar.jsp");
                         return;
                     } catch (Exception ex) {
-                        mensagem = "ERRO: " + ex.getLocalizedMessage();
+                        erro = "ERRO: " + ex.getLocalizedMessage();
                     }
                 }
             }
@@ -73,19 +62,19 @@
                 <span class="sobre">ELOGIO<img src="_imagens/sobre.png" alt="" onmouseover="Tip('Envie um elogio a secretaria.')" onmouseout="UnTip()"></span>
                 <br><br>
                 <%  // Verificando se usuário está logado, caso negativo oferece opções de login
-                    if (session.getAttribute("username") == null && request.getParameter("anonimo") == null) {
+                    if (usuario == null && nome.equals("")) {
                 %>
                 <div class="texto">Efetue login para fazer um elogio...</div>
                 <p class="secretariaobs">Caso prefira permanecer como Anônimo, <span class="link"><a href="?anonimo">Clique aqui</a></span>.</p><br>
                 <%@include file="_templates/login.jsp"%>
                 <%} else {%>
                 <% // Verificando se existe alguma mensagem de erro à ser exibida
-                    if (!mensagem.equals("")) out.println("<span style='color:red;'>" + mensagem + "</span><br><br>");
+                    if (!erro.equals("")) out.println("<span style='color:red;'>" + erro + "</span><br><br>");
                 %>
                 <span class="obrigatorio2">*Campos obrigatórios.</span><br><br>
-                <form method="POST" action="">
+                <form method="post" action="">
                     <input type="hidden" name="inserir">
-                    <input type='hidden' name='id' value='<%=session.getAttribute("id")%>'>
+                    <input type='hidden' name='id' value='<%=id%>'>
                     <label class="secretariaobs">Nome:</label><br>
                     <input type='text' size='57' class='secretariaobs' name='nome' readonly value='<%=nome%>'><br>
                     <%if (!nome.equals("ANÔNIMO")) {%>
@@ -112,7 +101,7 @@
                         %>
                     </select><br><br>
                     <label class="secretariaobs">Mensagem:</label> <span class="obrigatorio">*</span><br>
-                    <textarea name="mensagem" cols="50" rows="10"></textarea><br><br>
+                    <textarea name="mensagem" cols="50" rows="10" maxlength="500"></textarea><br><br>
                     <input type="submit" class="botao" value="Enviar">
                     <input type="reset" class="botao" value="Limpar">
                 </form>

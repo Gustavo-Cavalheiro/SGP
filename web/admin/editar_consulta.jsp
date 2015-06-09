@@ -1,3 +1,4 @@
+<%@page import="sgp.Conexao"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
@@ -5,10 +6,13 @@
 <%@page import="java.sql.Timestamp"%>
 <%@page import="java.util.Calendar"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%request.setCharacterEncoding("UTF-8");
+<%
+    request.setCharacterEncoding("UTF-8");
+    Usuario usuario = (Usuario) session.getAttribute("user");
+
     // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
-    if (session.getAttribute("username") == null || session.getAttribute("tipo") == null || !session.getAttribute("tipo").toString().equals("1")) {
-        response.sendRedirect(request.getContextPath());
+    if (usuario == null || usuario.getTipo() != 1) {
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
         return;
     }
 %>
@@ -25,7 +29,7 @@
 
             // Declaração das variáveis que vão armazenar os dados da consulta
             String id = "";
-            String usuario = "";
+            String usuario_id = "";
             String secretaria = "";
             String assunto = "";
             String data = "";
@@ -34,7 +38,7 @@
             if (request.getParameter("update") != null) {
                 // Pegando os parametros e removendo espaços desnecessários
                 id = request.getParameter("id");
-                usuario = request.getParameter("id");
+                usuario_id = request.getParameter("id");
                 secretaria = request.getParameter("secretaria");
                 assunto = request.getParameter("assunto").trim();
                 data = request.getParameter("data").trim();
@@ -49,7 +53,7 @@
                         SQL += "WHERE ID=?";
                         Connection con = Conexao.getConnection();
                         PreparedStatement ps = con.prepareStatement(SQL);
-                        ps.setInt(1, Integer.parseInt(usuario));
+                        ps.setInt(1, Integer.parseInt(usuario_id));
                         ps.setInt(2, Integer.parseInt(secretaria));
                         ps.setString(3, assunto);
                         ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
@@ -74,7 +78,7 @@
                     Statement stmt = Conexao.getConnection().createStatement();
                     ResultSet rs = stmt.executeQuery(SQL);
                     rs.next();
-                    usuario = rs.getString("USUARIO");
+                    usuario_id = rs.getString("USUARIO");
                     secretaria = rs.getString("SECRETARIA");
                     assunto = rs.getString("ASSUNTO");
                     data = rs.getString("DATA_PEDIDO");
@@ -87,7 +91,7 @@
                 response.sendRedirect(request.getContextPath() + "/admin/consultas.jsp");
                 return;
             }
-            %>
+        %>
         <div id="conteudo-container">
             <%@include file="../_templates/header.jsp"%>
             <%@include file="../_templates/menu.jsp"%>
@@ -95,7 +99,7 @@
                 <span class="sobre">EDITAR CONSULTA<img src="../_imagens/sobre.png" alt="" onmouseover="Tip('Fale com a prefeitura: marque uma consulta com a secretaria desejada.')" onmouseout="UnTip()"></span>
                 <br><br>
                 <% // Verificando se usuário está logado, caso negativo oferece opções de login
-                    if (session.getAttribute("username") == null) {
+                    if (usuario == null) {
                 %>
                 <div class="texto">Para marcar consultas é necessário estar logado no site.</div><br>
                 <%@include file="../_templates/login.jsp"%>
@@ -162,8 +166,7 @@
                             out.println("<option> 30/" + (date.get(Calendar.MONTH) + 2) + "/" + date.get(Calendar.YEAR) + "  16:00:00");
                         %>
                     </select><br><br>
-                    <input type="submit" class="botao" value="Enviar">
-                    <input type="reset" class="botao" value="Limpar">
+                    <input type="submit" class="botao" value="Atualizar">
                 </form>
                 <%}%>
             </div>

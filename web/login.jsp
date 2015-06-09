@@ -1,7 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%request.setCharacterEncoding("UTF-8");
+<%
+    request.setCharacterEncoding("UTF-8");
+    Usuario usuario = (Usuario) session.getAttribute("user");
+
     // Verificando se usuário já está logado, caso positivo redireciona para index
-    if (session.getAttribute("username") != null) {
+    if (usuario != null) {
         response.sendRedirect(request.getContextPath());
         return;
     }

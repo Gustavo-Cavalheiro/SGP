@@ -1,23 +1,15 @@
-<%@page import="br.com.sgp.Conexao"%>
-<%@page import="java.util.ArrayList"%>
+<%@page import="sgp.Usuario"%>
 <%
     try {
         // Tenta efetuar o login caso seja encontrado o parâmetro "email"
         if (request.getParameter("email") != null) {
             String email = request.getParameter("email").trim();
-            String pass = request.getParameter("password");
+            String senha = request.getParameter("password");
 
             // Verificando se o usuário está cadastrado no site através do e-mail e senha informados
-            String SQL = "SELECT ID, NOME, TIPO FROM USUARIOS WHERE EMAIL='" + email + "' AND SENHA='" + pass + "'";
-            ArrayList<Object[]> result = Conexao.getQuery(SQL);
-            if (result.size() > 0) {
-                // Attribuindo variáveis de sessão com os valores dos campos "ID", "NOME" e "TIPO" da tabela "USUARIOS"
-                for (Object[] reg : result) {
-                    session.setAttribute("id", reg[0]);
-                    session.setAttribute("username", reg[1]);
-                    session.setAttribute("tipo", reg[2]);
-                }
-
+            Usuario user = new Usuario();
+            if (user.login(email, senha)) {
+                session.setAttribute("user", user);
                 // Redereciona para a página anterior com base no parametro "returnto"
                 if (request.getParameter("returnto") != null && request.getParameter("returnto") != "") {
                     response.sendRedirect(request.getParameter("returnto"));
@@ -25,7 +17,6 @@
                     response.sendRedirect(request.getRequestURI());
                 }
                 return;
-
             } else {
                 // Usuário não cadastrado, exibindo mensagem de erro
                 out.println("<span class='obrigatorio2'>Usuário e/ou senha inválido(s)!</span><br><br>");

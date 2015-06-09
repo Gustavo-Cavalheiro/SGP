@@ -1,4 +1,4 @@
-package br.com.sgp;
+package sgp;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,7 +37,6 @@ public class Conexao {
         }
         if (e != null) throw e;
         return result;
-
     }
 
     public static ArrayList<Object[]> getQuery(String SQL) throws Exception {
@@ -50,7 +49,7 @@ public class Conexao {
             con = getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(SQL);
-            result = new ArrayList<Object[]>();
+            result = new ArrayList<>();
             while (rs.next()) {
                 Object[] reg = new Object[rs.getMetaData().getColumnCount()];
                 for (int i = 0; i < rs.getMetaData().getColumnCount(); ++i)
@@ -76,4 +75,5 @@ public class Conexao {
         if (e != null) throw e;
         return result;
     }
+
 }

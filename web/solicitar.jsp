@@ -1,8 +1,10 @@
-<%@page import="java.sql.Connection"%>
-<%@page import="java.sql.PreparedStatement"%>
-<%@page import="java.sql.Timestamp"%>
+<%@page import="sgp.Conexao"%>
+<%@page import="sgp.Solicitacao"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%request.setCharacterEncoding("UTF-8");%>
+<%
+    request.setCharacterEncoding("UTF-8");
+    Usuario usuario = (Usuario) session.getAttribute("user");
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,40 +15,33 @@
     <body>
         <%
             // Declaração da variável que conterá as possíveis mensagens de erro
-            String mensagem = "";
+            String erro = "";
 
             // Verificando se existem parametros para inserir na tabela SOLICITACOES
             if (request.getParameter("inserir") != null) {
                 // Pegando os parametros e removendo espaços desnecessários
-                String usuario = request.getParameter("id");
+                String usuario_id = request.getParameter("id");
                 String servico = request.getParameter("servico");
                 String endereco = request.getParameter("endereco").trim();
                 String info_adicional = request.getParameter("info_adicional").trim();
 
                 // Verificando se o usuário deixou vazio o campo endereco
                 if (endereco.equals("")) {
-                    mensagem = "O campo \"Endereço\" é de preenchimento obrigatório.";
+                    erro = "O campo \"Endereço\" é de preenchimento obrigatório.";
                 } else {
                     try {
-                        // Inserindo os dados do servico solicitado
-                        String SQL = "INSERT INTO SOLICITACOES ";
-                        SQL += "(USUARIO, SERVICO, ENDERECO, INFO_ADICIONAL, DATA) ";
-                        SQL += "VALUES (?,?,?,?,?)";
-                        Connection con = Conexao.getConnection();
-                        PreparedStatement ps = con.prepareStatement(SQL);
-                        ps.setInt(1, Integer.parseInt(usuario));
-                        ps.setInt(2, Integer.parseInt(servico));
-                        ps.setString(3, endereco);
-                        ps.setString(4, info_adicional);
-                        ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-                        ps.execute();
-                        ps.close();
+                        Solicitacao solicitacao = new Solicitacao();
+                        solicitacao.setUsuario(Integer.parseInt(usuario_id));
+                        solicitacao.setServico(Integer.parseInt(servico));
+                        solicitacao.setEndereco(endereco);
+                        solicitacao.setInfo(info_adicional);
+                        solicitacao.inserir();
 
-                        // Após inserir os dados redireciona para a página de consultas
+                        // Após inserir solicitacao redireciona para a página de consultas
                         response.sendRedirect(request.getContextPath() + "/consultar.jsp");
                         return;
                     } catch (Exception ex) {
-                        mensagem = "ERRO: " + ex.getLocalizedMessage();
+                        erro = "ERRO: " + ex.getLocalizedMessage();
                     }
                 }
             }
@@ -58,21 +53,21 @@
                 <span class="sobre">SOLICITAR SERVIÇOS<img src="_imagens/sobre.png" alt="" onmouseover="Tip('Existe algum problema? Solicite um serviço a prefeitura.')" onmouseout="UnTip()"></span>
                 <br><br>
                 <% // Verificando se usuário está logado, caso negativo oferece opções de login
-                    if (session.getAttribute("username") == null) {
+                    if (usuario == null) {
                 %>
                 <div class="texto">Para solicitar serviços é necessário estar logado no site.</div><br>
                 <%@include file="_templates/login.jsp"%>
 
                 <%} else {%>
                 <% // Verificando se existe alguma mensagem de erro à ser exibida
-                    if (!mensagem.equals("")) out.println("<span style='color:red;'>" + mensagem + "</span><br><br>");
+                    if (!erro.equals("")) out.println("<span style='color:red;'>" + erro + "</span><br><br>");
                 %>
                 <span class="obrigatorio2">*Campos obrigatórios.</span><br><br>
                 <form method="post" action="">
                     <input type="hidden" name="inserir">
-                    <input type='hidden' name='id' value='<%=session.getAttribute("id")%>'>
+                    <input type='hidden' name='id' value='<%=usuario.getId()%>'>
                     <label class="secretariaobs">Nome:</label><br>
-                    <input type='text' size='57' class='secretariaobs' name='nome' readonly value='<%=session.getAttribute("username")%>'><br>
+                    <input type='text' size='57' class='secretariaobs' name='nome' readonly value='<%=usuario.getNome()%>'><br>
                     <p class="secretariaobs">Não é você? <span class="link"><a href="?logoff">Clique aqui.</a></span></p><br>
                     <label class="secretariaobs">Selecione o serviço a ser realizado:</label> <span class="obrigatorio">*</span><br>
                     <select id="secretaria" name="servico" class="secretariaobs">
@@ -94,10 +89,10 @@
                         %>
                     </select><br><br>
                     <label class="secretariaobs">Informe o endereço onde o serviço deve ser realizado:</label> <span class="obrigatorio">*</span><br>
-                    <input type='text' size='57' class='secretariaobs' name='endereco' value='${param.endereco}'>
+                    <input type='text' size='57' class='secretariaobs' name='endereco' value='${param.endereco}' maxlength="100">
                     <br><br>
                     <label class="secretariaobs">Informações adicionais:</label><br>
-                    <textarea name="info_adicional" cols="50" rows="10">${param.info_adicional}</textarea>
+                    <textarea name="info_adicional" cols="50" rows="10" maxlength="500">${param.info_adicional}</textarea>
                     <br><br>
                     <input type="submit" class="botao" value="Enviar">
                     <input type="reset" class="botao" value="Limpar">

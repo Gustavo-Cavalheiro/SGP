@@ -1,13 +1,17 @@
+<%@page import="sgp.Conexao"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Timestamp"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%request.setCharacterEncoding("UTF-8");
+<%
+    request.setCharacterEncoding("UTF-8");
+    Usuario usuario = (Usuario) session.getAttribute("user");
+
     // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
-    if (session.getAttribute("username") == null || session.getAttribute("tipo") == null || !session.getAttribute("tipo").toString().equals("1")) {
-        response.sendRedirect(request.getContextPath());
+    if (usuario == null || usuario.getTipo() != 1) {
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
         return;
     }
 %>
@@ -57,7 +61,7 @@
                         mensagem = "ERRO: " + ex.getLocalizedMessage();
                     }
                 }
-             } else if (request.getParameter("ID") != null && request.getParameter("ID") != "") {
+            } else if (request.getParameter("ID") != null && request.getParameter("ID") != "") {
                 //Pegando os dados do usuário da tabela "USUARIOS" de acordo com o parâmetro "ID"
                 try {
                     id = request.getParameter("ID");
@@ -80,7 +84,7 @@
                 <span class="sobre">EDITAR RECLAMAÇÃO<img src="../_imagens/sobre.png" alt="" onmouseover="Tip('Envie um elogio a secretaria.')" onmouseout="UnTip()"></span>
                 <br><br>
                 <%  // Verificando se usuário está logado, caso negativo oferece opções de login
-                    if (session.getAttribute("username") == null && request.getParameter("anonimo") == null) {
+                    if (usuario == null) {
                 %>
                 <div class="texto">Efetue login para fazer um reclamação...</div>
                 <p class="secretariaobs">Caso prefira permanecer como Anônimo, <span class="link"><a href="?anonimo">Clique aqui</a></span>.</p><br>
@@ -90,7 +94,7 @@
                     if (!mensagem.equals("")) out.println("<span style='color:red;'>" + mensagem + "</span><br><br>");
                 %>
                 <span class="obrigatorio2">*Campos obrigatórios.</span><br><br>
-                <form method="POST" action="">
+                <form method="post" action="">
                     <input type="hidden" name="inserir">
                     <input type='hidden' name='id' value='<%=id%>'>
                     <label class="secretariaobs">Selecione a secretaria:</label> <span class="obrigatorio">*</span><br>
@@ -112,9 +116,8 @@
                         %>
                     </select><br><br>
                     <label class="secretariaobs">Mensagem:</label> <span class="obrigatorio">*</span><br>
-                    <textarea name="mensagem" cols="50" rows="10"><%=reclamacao%></textarea><br><br>
-                    <input type="submit" class="botao" value="Enviar">
-                    <input type="reset" class="botao" value="Limpar">
+                    <textarea name="mensagem" cols="50" rows="10" maxlength="500"><%=reclamacao%></textarea><br><br>
+                    <input type="submit" class="botao" value="Atualizar">
                 </form>
                 <%}%>
             </div>

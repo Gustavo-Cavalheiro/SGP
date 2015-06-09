@@ -1,13 +1,17 @@
+<%@page import="sgp.Conexao"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Timestamp"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%request.setCharacterEncoding("UTF-8");
+<%
+    request.setCharacterEncoding("UTF-8");
+    Usuario usuario = (Usuario) session.getAttribute("user");
+
     // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
-    if (session.getAttribute("username") == null || session.getAttribute("tipo") == null || !session.getAttribute("tipo").toString().equals("1")) {
-        response.sendRedirect(request.getContextPath());
+    if (usuario == null || usuario.getTipo() != 1) {
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
         return;
     }
 %>
@@ -85,11 +89,10 @@
                 <span class="sobre">EDITAR SOLICITAÇÃO DE SERVIÇO<img src="../_imagens/sobre.png" alt="" onmouseover="Tip('Existe algum problema? Solicite um serviço a prefeitura.')" onmouseout="UnTip()"></span>
                 <br><br>
                 <% // Verificando se usuário está logado, caso negativo oferece opções de login
-                    if (session.getAttribute("username") == null) {
+                    if (usuario == null) {
                 %>
                 <div class="texto">Para solicitar serviços é necessário estar logado no site.</div><br>
                 <%@include file="../_templates/login.jsp"%>
-
                 <%} else {%>
                 <% // Verificando se existe alguma mensagem de erro à ser exibida
                     if (!mensagem.equals("")) out.println("<span style='color:red;'>" + mensagem + "</span><br><br>");
@@ -117,13 +120,12 @@
                         %>
                     </select><br><br>
                     <label class="secretariaobs">Informe o endereço onde o serviço deve ser realizado:</label> <span class="obrigatorio">*</span><br>
-                    <input type='text' size='57' class='secretariaobs' name='endereco' value='<%=endereco%>'>
+                    <input type='text' size='57' class='secretariaobs' name='endereco' value='<%=endereco%>' maxlength="100">
                     <br><br>
                     <label class="secretariaobs">Informações adicionais:</label><br>
-                    <textarea name="info_adicional" cols="50" rows="10"><%=info_adicional%></textarea>
+                    <textarea name="info_adicional" cols="50" rows="10" maxlength="500"><%=info_adicional%></textarea>
                     <br><br>
-                    <input type="submit" class="botao" value="Enviar">
-                    <input type="reset" class="botao" value="Limpar">
+                    <input type="submit" class="botao" value="Atualizar">
                 </form>
                 <%}%>
             </div>

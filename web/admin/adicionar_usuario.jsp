@@ -1,13 +1,14 @@
-<%@page import="br.com.sgp.Conexao"%>
-<%@page import="java.sql.Connection"%>
-<%@page import="java.sql.PreparedStatement"%>
-<%@page import="java.sql.Timestamp"%>
+<%@page import="sgp.Conexao"%>
+<%@page import="sgp.Validacoes"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%request.setCharacterEncoding("UTF-8");
+<%
+    request.setCharacterEncoding("UTF-8");
+    Usuario usuario = (Usuario) session.getAttribute("user");
+
     // Verificando se usuário está logado e se tem permissões de administrador, caso negativo redireciona para index
-    if (session.getAttribute("username") == null || session.getAttribute("tipo") == null || !session.getAttribute("tipo").toString().equals("1")) {
-        response.sendRedirect(request.getContextPath());
+    if (usuario == null || usuario.getTipo() != 1) {
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
         return;
     }
 %>
@@ -29,16 +30,16 @@
                 String nome = request.getParameter("nome").trim();
                 String sobrenome = request.getParameter("sobrenome").trim();
                 String email = request.getParameter("email").trim();
-                String cpf = request.getParameter("cpf").trim();
+                String cpf = request.getParameter("cpf").trim().replaceAll("\\D", "");
                 String endereco = request.getParameter("endereco").trim();
                 String numero = request.getParameter("numero").trim();
                 String complemento = request.getParameter("complemento").trim();
-                String cep = request.getParameter("cep").trim();
+                String cep = request.getParameter("cep").trim().replaceAll("\\D", "");
                 String bairro = request.getParameter("bairro").trim();
                 String cidade = request.getParameter("cidade").trim();
                 String estado = request.getParameter("estado").trim();
-                String telefone = request.getParameter("telefone").trim();
-                String celular = request.getParameter("celular").trim();
+                String telefone = request.getParameter("telefone").trim().replaceAll("\\D", "");
+                String celular = request.getParameter("celular").trim().replaceAll("\\D", "");
                 String tipo = request.getParameter("tipo").trim();
                 String senha = request.getParameter("senha").trim();
                 String senha2 = request.getParameter("senha2").trim();
@@ -50,6 +51,7 @@
                 if (email.equals("")) erro.add("\"E-mail\"");
                 if (cpf.equals("")) erro.add("\"CPF\"");
                 if (endereco.equals("")) erro.add("\"Endereço\"");
+                if (numero.equals("")) erro.add("\"Numero\"");
                 if (cep.equals("")) erro.add("\"CEP\"");
                 if (bairro.equals("")) erro.add("\"Bairro\"");
                 if (cidade.equals("")) erro.add("\"Cidade\"");
@@ -73,54 +75,64 @@
                         mensagem += " são de preenchimento obrigatório.";
                     }
 
-                    // Verificando se os campos "Senha" e "Confirmar Senha" são iguais
-                } else if (!senha.equals(senha2)) {
-                    mensagem = "As senhas digitadas são diferentes.";
+                    // Verificando Email
+                } else if (!Validacoes.validaEmail(email)) {
+                    mensagem = "O e-mail informado é invalido.";
+
+                    // Verificando CPF
+                } else if (!Validacoes.validaCPF(cpf)) {
+                    mensagem = "O CPF informado é invalido.";
+
+                    // Verificando Numero
+                } else if (!Validacoes.isNumeric(numero)) {
+                    mensagem = "O Numero informado é invalido.";
+
+                    // Verificando CEP
+                } else if (!Validacoes.validaCep(cep)) {
+                    mensagem = "O CEP informado é invalido.";
+
+                    // Verificando Telefone
+                } else if (!telefone.equals("") && !Validacoes.validaTelefone(telefone)) {
+                    mensagem = "O Telefone informado é invalido.";
+
+                    // Verificando Celular
+                } else if (!celular.equals("") && !Validacoes.validaCelular(celular)) {
+                    mensagem = "O Celular informado é invalido.";
 
                     // Verificando o tamanho da senha (necessário ao menos 6 caracteres)
                 } else if (senha.length() < 6) {
                     mensagem = "A senha precisa ter no mínimo 6 caracteres.";
 
+                    // Verificando se os campos "Senha" e "Confirmar Senha" são iguais
+                } else if (!senha.equals(senha2)) {
+                    mensagem = "As senhas digitadas são diferentes.";
+
                 } else {
                     try {
-                        // Verificando se o email informado já está cadastrado no site
-                        String SQL = "SELECT * FROM USUARIOS WHERE EMAIL='" + email + "'";
-                        if (Conexao.getQuery(SQL).size() > 0) {
-                            mensagem = "O e-mail informado já está cadastrado no site.";
+                        // Inserindo novo usuário
+                        usuario = new Usuario();
+                        usuario.setNome(nome);
+                        usuario.setSobrenome(sobrenome);
+                        usuario.setEmail(email);
+                        usuario.setCpf(cpf);
+                        usuario.setEndereco(endereco);
+                        usuario.setNumero(Integer.parseInt(numero));
+                        usuario.setComplemento(complemento);
+                        usuario.setCep(cep);
+                        usuario.setBairro(bairro);
+                        usuario.setCidade(cidade);
+                        usuario.setEstado(Integer.parseInt(estado));
+                        usuario.setTelefone(telefone);
+                        usuario.setCelular(celular);
+                        usuario.setSenha(senha);
+                        usuario.setTipo(Integer.parseInt(tipo));
+                        usuario.inserir();
 
-                        } else {
-                            // Inserindo os dados do novo usuário
-                            SQL = "INSERT INTO USUARIOS ";
-                            SQL += "(NOME, SOBRENOME, EMAIL, CPF, ENDERECO, NUMERO, COMPLEMENTO, CEP, ";
-                            SQL += "BAIRRO, CIDADE, ESTADO, TELEFONE, CELULAR, SENHA, TIPO, DATA_REGISTRO) ";
-                            SQL += "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-                            Connection con = Conexao.getConnection();
-                            PreparedStatement ps = con.prepareStatement(SQL);
-                            ps.setString(1, nome);
-                            ps.setString(2, sobrenome);
-                            ps.setString(3, email);
-                            ps.setString(4, cpf);
-                            ps.setString(5, endereco);
-                            ps.setString(6, numero);
-                            ps.setString(7, complemento);
-                            ps.setString(8, cep);
-                            ps.setString(9, bairro);
-                            ps.setString(10, cidade);
-                            ps.setInt(11, Integer.parseInt(estado));
-                            ps.setString(12, telefone);
-                            ps.setString(13, celular);
-                            ps.setString(14, senha);
-                            ps.setInt(15, Integer.parseInt(tipo));
-                            ps.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
-                            ps.execute();
-                            ps.close();
-
-                            // Após inserir os dados, redireciona para a página de usuários cadastrados
-                            response.sendRedirect(request.getContextPath() + "/admin/usuarios.jsp");
-                            return;
-                        }
+                        // Após inserir usuario redireciona para a página de usuários cadastrados
+                        response.sendRedirect(request.getContextPath() + "/admin/usuarios.jsp");
+                        return;
                     } catch (Exception ex) {
-                        mensagem = "ERRO: " + ex.getLocalizedMessage();
+                        mensagem = ex.getLocalizedMessage();
                     }
                 }
             }
@@ -128,14 +140,17 @@
         <div id="conteudo-container">
             <%@include file="../_templates/header.jsp"%>
             <%@include file="../_templates/menu.jsp"%>
+            <script type="text/javascript" src="../_scripts/script.js"></script>
             <div id="containerinterno">
                 <span class="sobre">CADASTRAR NOVO USUÁRIO<img src="../_imagens/sobre.png" alt="" onmouseover="Tip('Permite cadastrar um novo usuário, com a possibilidade de conceder-lhe privilégios administrativos.')" onmouseout="UnTip()"></span>
                 <br><br>
-                <% // Verificando se existe alguma mensagem de erro à ser exibida
-                    if (!mensagem.equals("")) out.println("<span style='color:red;'>" + mensagem + "</span><br><br>");
-                %>
+                <div id="erro" style="color:red;">
+                    <% // Verificando se existe alguma mensagem de erro à ser exibida
+                        if (!mensagem.equals("")) out.println(mensagem + "<br><br>");
+                    %>
+                </div>
                 <span class="obrigatorio2">*Campos obrigatórios.</span><br>
-                <form method="POST" action="">
+                <form method="post" action="">
                     <input type="hidden" name="inserir">
                     <table cellspacing="10">
                         <tr>
@@ -164,57 +179,56 @@
                         <tr>
                             <td colspan="3">
                                 <label class="secretariaobs">Nome:</label><span class="obrigatorio">*</span>
-                                <br><input type="text" size="33" name="nome" value="${param.nome}" title="Insira o seu nome">
+                                <br><input type="text" size="33" name="nome" value="${param.nome}" title="Insira o seu nome" onkeypress="return apenasLetras(event);" maxlength="50">
                             </td>
                             <td colspan="3">
                                 <label class="secretariaobs">Sobrenome:</label><span class="obrigatorio">*</span>
-                                <br><input type="text" size="33" name="sobrenome" value="${param.sobrenome}" title="Insira o seu sobrenome">
+                                <br><input type="text" size="33" name="sobrenome" value="${param.sobrenome}" title="Insira o seu sobrenome" onkeypress="return apenasLetras(event);" maxlength="50">
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
                                 <label class="secretariaobs">E-mail:</label><span class="obrigatorio">*</span>
-                                <br><input type="text" size="33" name="email" value="${param.email}" title="Insira o seu e-mail">
+                                <br><input type="text" size="33" name="email" value="${param.email}" title="Insira o seu e-mail" onkeypress="return mascaraEmail(this, event);" maxlength="50">
                             </td>
                             <td colspan="3">
                                 <label class="secretariaobs">CPF:</label><span class="obrigatorio">*</span>
-                                <br><input type="text" size="33" name="cpf" value="${param.cpf}" title="Insira o seu CPF">
+                                <br><input type="text" size="33" name="cpf" value="${param.cpf}" title="Insira o seu CPF" onkeypress="return mascaraCpf(this, event);" maxlength="14">
                             </td>
                         </tr>
                         <tr>
                             <td colspan="6">
                                 <label class="secretariaobs">Endereço:</label><span class="obrigatorio">*</span>
-                                <br><input type="text" size="72" name="endereco" value="${param.endereco}" title="Insira o seu endereço">
+                                <br><input type="text" size="72" name="endereco" value="${param.endereco}" title="Insira o seu endereço" maxlength="100">
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <label class="secretariaobs">Número:</label>
-                                <br><input type="text" name="numero" value="${param.numero}" title="Insira o número de seu endereço">
+                                <label class="secretariaobs">Número:</label><span class="obrigatorio">*</span>
+                                <br><input type="text" name="numero" value="${param.numero}" title="Insira o número de seu endereço" onkeypress="return apenasNumeros(event);" maxlength="5">
                             </td>
                             <td colspan="2">
                                 <label class="secretariaobs">Complemento:</label>
-                                <br><input type="text" name="complemento" value="${param.complemento}" title="Insira o complemento, caso haja">
+                                <br><input type="text" name="complemento" value="${param.complemento}" title="Insira o complemento, caso haja" maxlength="50">
                             </td>
                             <td colspan="2">
                                 <label class="secretariaobs">CEP:</label><span class="obrigatorio">*</span>
-                                <br><input type="text" name="cep" value="${param.cep}" title="Insira o número do CEP de seu endereço">
+                                <br><input type="text" name="cep" value="${param.cep}" title="Insira o número do CEP de seu endereço" onkeypress="return mascaraCep(this, event);" maxlength="10">
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <label class="secretariaobs">Bairro:</label><span class="obrigatorio">*</span>
-                                <br><input type="text" name="bairro" value="${param.bairro}" title="Insira o bairro onde mora">
+                                <br><input type="text" name="bairro" value="${param.bairro}" title="Insira o bairro onde mora" onkeypress="return apenasLetras(event);" maxlength="30">
                             </td>
                             <td colspan="2">
                                 <label class="secretariaobs">Cidade:</label><span class="obrigatorio">*</span>
-                                <br><input type="text" name="cidade" value="${param.cidade}" title="Insira a cidade onde mora">
+                                <br><input type="text" name="cidade" value="${param.cidade}" title="Insira a cidade onde mora" onkeypress="return apenasLetras(event);" maxlength="30">
                             </td>
                             <td colspan="2">
                                 <label class="secretariaobs">Estado:</label><span class="obrigatorio">*</span>
                                 <br><select id="estado" name="estado">
-                                    <%
-                                        // Populando o elemento select com os dados da tabela ESTADOS
+                                    <%  // Populando o elemento select com os dados da tabela ESTADOS
                                         try {
                                             String query = "SELECT ID,SIGLA FROM ESTADOS";
                                             String estado = request.getParameter("estado");
@@ -235,22 +249,22 @@
                         <tr>
                             <td colspan="2">
                                 <label class="secretariaobs">Telefone Residencial:</label>
-                                <br><input type="text" name="telefone" value="${param.telefone}" title="Insira o número do seu telefone residencial">
+                                <br><input type="text" name="telefone" value="${param.telefone}" title="Insira o número do seu telefone residencial" onkeypress="return mascaraTelefone(this, event);" maxlength="14">
                             </td>
                             <td colspan="2">
                                 <label class="secretariaobs">Telefone Móvel:</label>
-                                <br><input type="text" name="celular" value="${param.celular}" title="Insira o número do seu telefone móvel">
+                                <br><input type="text" name="celular" value="${param.celular}" title="Insira o número do seu telefone móvel" onkeypress="return mascaraCelular(this, event);" maxlength="15">
                             </td>
                             <td colspan="2"></td>
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <label class="secretariaobs">Senha:</label><span class="obrigatorio">*</span>
-                                <br><input type="password" name="senha" title="Insira uma senha">
+                                <br><input type="password" name="senha" title="Insira uma senha" maxlength="50">
                             </td>
                             <td colspan="2">
                                 <label class="secretariaobs">Confirme a senha:</label><span class="obrigatorio">*</span>
-                                <br><input type="password" name="senha2" title="Confirme a sua senha">
+                                <br><input type="password" name="senha2" title="Confirme a sua senha" maxlength="50">
                             </td>
                             <td colspan="2"></td>
                         </tr>

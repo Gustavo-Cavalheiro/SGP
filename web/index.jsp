@@ -24,6 +24,7 @@
                         <th class="tabela3"><a href="http://www.praiagrande.sp.gov.br/pgnoticias/noticias/noticia_01.asp?cod=32379" target="_blank"> Praia Grande realiza o Ação Cidadania no Caieiras. São esperadas 10 mil pessoas. </a></th>
                         <th class="tabela3"><a href="http://www.praiagrande.sp.gov.br/pgnoticias/noticias/noticia_01.asp?cod=32442" target="_blank"> Sehab constata diversas irregularidades em conjuntos habitacionais.</a></th>
                         <th class="tabela3"><a href="http://praiagrande.sp.gov.br/pgnoticias/noticias/noticia_01.asp?cod=32351" target="_blank"> Tablets e lousas digitais modernizam ensino em Praia Grande.</a></th>
+                    </tr>
                 </table>
                 <br>
                 <span class="secretaria"><a href="http://www.praiagrande.sp.gov.br/portal.asp?cd_pagina=75" target="_blank"> <b>+ NOTÍCIAS</b></a></span>
