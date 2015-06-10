@@ -1,3 +1,4 @@
+<%@page import="sgp.Email"%>
 <%@page import="sgp.Validacoes"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%request.setCharacterEncoding("UTF-8");%>
@@ -18,16 +19,21 @@
                 <br><br>
                 <%  if (request.getParameter("recuperar") != null && !request.getParameter("recuperar").equals("")) {
                         String email = request.getParameter("recuperar").trim();
+                        String voltar = "/recuperar.jsp";
                         if (!Validacoes.validaEmail(email)) {
                             out.println("<span style='color:red'>O e-mail informado é invalido.</span><br><br>");
-                            out.println("<form action='" + request.getContextPath() + "/recuperar.jsp'>");
                         } else if (Usuario.verificaEmail(email)) {
-                            out.println("<span style='color:red'>Você receberá um e-mail com instruções para gerar uma nova senha.</span><br><br>");
-                            out.println("<form action='" + request.getContextPath() + "/index.jsp'>");
+                            try {
+                                Email.send(email, Usuario.getSenha(email));
+                                out.println("<span style='color:red'>Você receberá um e-mail com instruções para gerar uma nova senha.</span><br><br>");
+                                voltar = "/login.jsp";
+                            } catch (Exception ex) {
+                                out.println("<span style='color:red'>Desculpe, houve um problema ao tentar recuperar sua senha. Por favor tente novamente mais tarde.</span><br><br>");
+                            }
                         } else {
                             out.println("<span style='color:red'>Não existe nenhum usuário cadastrado com o e-mail informado.</span><br><br>");
-                            out.println("<form action='" + request.getContextPath() + "/recuperar.jsp'>");
                         }
+                        out.println("<form action='" + request.getContextPath() + voltar + "'>");
                         out.println("<input type='submit' class='botao' value='Voltar'>");
                         out.println("</form>");
                     } else {

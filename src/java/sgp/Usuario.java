@@ -267,7 +267,7 @@ public class Usuario {
         }
     }
 
-    public boolean delete(int id) throws Exception {
+    public static boolean delete(int id) throws Exception {
         try {
             if (id == 1) throw new Exception("Usuario ANÔNIMO não pode ser deletado!");
             Conexao.executeStatement("DELETE FROM CONSULTAS WHERE USUARIO = " + id);
@@ -290,9 +290,28 @@ public class Usuario {
         }
     }
 
-    public Usuario getUsuario(int id) throws Exception {
+    public static Usuario getUsuario(int id) throws Exception {
         try {
             String SQL = "SELECT * FROM USUARIOS WHERE ID = " + id;
+            return getUser(SQL);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    public static String getSenha(String email) throws Exception {
+        try {
+            String SQL = "SELECT * FROM USUARIOS WHERE EMAIL='" + email + "'";
+            Usuario usuario = getUser(SQL);
+            if (usuario != null) return usuario.senha;
+            else return null;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    private static Usuario getUser(String SQL) throws Exception {
+        try {
             ArrayList<Object[]> result = Conexao.getQuery(SQL);
             if (result.size() > 0) {
                 Usuario usuario = new Usuario();
@@ -324,11 +343,11 @@ public class Usuario {
         }
     }
 
-    public String getUsuarios() {
+    public static String getUsuarios() {
         return getUsuarios("", "");
     }
 
-    public String getUsuarios(String pesquisa, String campo) {
+    public static String getUsuarios(String pesquisa, String campo) {
         String html = "";
         try {
             String SQL = "SELECT u.ID, u.NOME, u.SOBRENOME, u.EMAIL, u.CPF, u.ENDERECO, u.NUMERO, u.COMPLEMENTO, "

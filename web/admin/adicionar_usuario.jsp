@@ -270,7 +270,7 @@
                         </tr>
                         <tr>
                             <td colspan="6">
-                                <input type="submit" class="botao" value="Incluir">
+                                <input type="submit" class="botao" value="Cadastrar">
                                 <input type="reset" class="botao" value="Limpar">
                             </td>
                         </tr>

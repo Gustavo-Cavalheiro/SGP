@@ -43,15 +43,8 @@ function mascaraCelular(cel, e) {
 }
 
 function mascaraEmail(email, e) {
-    var tecla;
-    if (window.event) {
-        tecla = e.keyCode;
-    } else if (e.which) {
-        tecla = e.which;
-    } else {
-        return true;
-    }
-
+    var tecla = getKey(e);
+    if (!tecla) return true;
     var caractere = String.fromCharCode(tecla);
     var validar = /^[a-zA-z0-9@.\-_]+$/;
     if (validar.test(caractere) || tecla === 8 || tecla === 13) { // 8=Backspace, 13=Enter
@@ -96,15 +89,8 @@ function formataCelular(valor) {
 }
 
 function apenasNumeros(e) {
-    var tecla;
-    if (window.event) {
-        tecla = e.keyCode;
-    } else if (e.which) {
-        tecla = e.which;
-    } else {
-        return true;
-    }
-
+    var tecla = getKey(e);
+    if (!tecla) return true;
     if ((tecla > 47 && tecla < 58) || tecla === 8 || tecla === 13) { // 8=Backspace, 13=Enter
         return true;
     } else {
@@ -113,20 +99,21 @@ function apenasNumeros(e) {
 }
 
 function apenasLetras(e) {
-    var tecla;
-    if (window.event) {
-        tecla = e.keyCode;
-    } else if (e.which) {
-        tecla = e.which;
-    } else {
-        return true;
-    }
-
+    var tecla = getKey(e);
+    if (!tecla) return true;
     var letra = String.fromCharCode(tecla);
     var validar = /^[a-zA-z\u00C0-\u00ff\s]+$/;
     if (validar.test(letra) || tecla === 8 || tecla === 13) { // 8=Backspace, 13=Enter
         return true;
     } else {
         return false;
+    }
+}
+
+function getKey(e) {
+    if (window.event) {
+        return e.keyCode;
+    } else if (e.which) {
+        return e.which;
     }
 }
