@@ -24,7 +24,8 @@
                             out.println("<span style='color:red'>O e-mail informado é invalido.</span><br><br>");
                         } else if (Usuario.verificaEmail(email)) {
                             try {
-                                Email.send(email, Usuario.getSenha(email));
+                                Usuario usuario = Usuario.getUsuario(email);
+                                Email.send(usuario.getNome(), usuario.getEmail(), usuario.getSenha());
                                 out.println("<span style='color:red'>Você receberá um e-mail com instruções para gerar uma nova senha.</span><br><br>");
                                 voltar = "/login.jsp";
                             } catch (Exception ex) {

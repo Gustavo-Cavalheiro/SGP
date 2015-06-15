@@ -37,7 +37,7 @@
                         <option value="endereco" <%if (campo.equals("endereco")) out.println("selected");%>>Endereço</option>
                         <option value="informacoes" <%if (campo.equals("informacoes")) out.println("selected");%>>Informações</option>
                     </select>
-                    <input type="submit" value="OK"/>
+                    <input type="submit" class="botao" value="OK"/>
                 </form>
                 <br>
                 <%

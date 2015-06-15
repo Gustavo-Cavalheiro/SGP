@@ -37,7 +37,7 @@
                         <option value="secretaria" <%if (campo.equals("secretaria")) out.println("selected");%>>Secretaria</option>
                         <option value="assunto" <%if (campo.equals("assunto")) out.println("selected");%>>Assunto</option>
                     </select>
-                    <input type="submit" value="OK"/>
+                    <input type="submit" class="botao" value="OK"/>
                 </form>
                 <br>
                 <%

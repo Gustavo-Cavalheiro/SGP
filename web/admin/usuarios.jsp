@@ -36,7 +36,7 @@
                         <option value="cpf" <%if (campo.equals("cpf")) out.println("selected");%>>CPF</option>
                         <option value="tipo" <%if (campo.equals("tipo")) out.println("selected");%>>Tipo de Usuário</option>
                     </select>
-                    <input type="submit" value="OK"/>
+                    <input type="submit" class="botao" value="OK"/>
                 </form>
                 <br>
                 <%  // Deleta usuário caso seja encontrado parâmetro "delete"

@@ -9,7 +9,7 @@
     }
 %>
 <div id="topo">
-    <a href="<%=home%>/index.jsp"><img src="<%=home%>/_imagens/logo.png" width="433" height="140" alt="home - Sistema de Gerenciamento Politico"></a>
+    <a href="<%=home%>/index.jsp"><img src="<%=home%>/_imagens/logo.png" width="433" height="140" alt="SGP - Sistema de Gerenciamento Politico"></a>
 </div>
 <div class="login">
     <%  // Caso usuário esteja logado, exibe o nome de usuário e opçao para sair

@@ -299,6 +299,15 @@ public class Usuario {
         }
     }
 
+    public static Usuario getUsuario(String email) throws Exception {
+        try {
+            String SQL = "SELECT * FROM USUARIOS WHERE EMAIL='" + email + "'";
+            return getUser(SQL);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
     public static String getSenha(String email) throws Exception {
         try {
             String SQL = "SELECT * FROM USUARIOS WHERE EMAIL='" + email + "'";
