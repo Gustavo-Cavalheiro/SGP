@@ -65,9 +65,9 @@ public class Consulta {
 
     public boolean inserir() throws Exception {
         try {
-            String SQL = "INSERT INTO CONSULTAS ";
-            SQL += "(USUARIO, SECRETARIA, ASSUNTO, DATA_PEDIDO, DATA_AGENDADA) ";
-            SQL += "VALUES (?,?,?,?,?)";
+            String SQL = "INSERT INTO CONSULTAS "
+                    + "(USUARIO, SECRETARIA, ASSUNTO, DATA_PEDIDO, DATA_AGENDADA) "
+                    + "VALUES (?,?,?,?,?)";
             Connection con = Conexao.getConnection();
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, this.usuario);
@@ -83,7 +83,16 @@ public class Consulta {
         }
     }
 
-    public boolean delete(String id) throws Exception {
+    public boolean delete() throws Exception {
+        try {
+            Conexao.executeStatement("DELETE FROM CONSULTAS WHERE ID = " + this.id);
+            return true;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    public static boolean delete(String id) throws Exception {
         try {
             Conexao.executeStatement("DELETE FROM CONSULTAS WHERE ID = " + id);
             return true;
@@ -92,26 +101,26 @@ public class Consulta {
         }
     }
 
-    public String getConsultas() {
+    public static String getConsultas() {
         return getConsultas("", "");
     }
 
-    public String getConsultas(int id) {
+    public static String getConsultas(int id) {
         String html = "";
         try {
             String SQL = "SELECT s.NOME, c.ASSUNTO, c.DATA_PEDIDO, c.DATA_AGENDADA FROM CONSULTAS c JOIN SECRETARIAS s ON(c.SECRETARIA = s.ID) WHERE c.USUARIO=" + id + " ORDER BY c.ID";
             ArrayList<Object[]> result = Conexao.getQuery(SQL);
             if (result.size() > 0) {
-                html += "<table class='tabela'>";
-                html += "<th class='tabela'>Secretaria</th><th class='tabela'>Assunto</th><th class='tabela'>Data da Solicitação</th><th class='tabela'>Data Agendada</th>";
+                html += "<table class='tabela'>"
+                        + "<th class='tabela'>Secretaria</th><th class='tabela'>Assunto</th><th class='tabela'>Data da Solicitação</th><th class='tabela'>Data Agendada</th>";
                 for (Object[] reg : result) {
                     Date date = (Date) reg[2];
-                    html += "<tr>";
-                    html += "<td>" + reg[0] + "</td>";
-                    html += "<td>" + reg[1] + "</td>";
-                    html += "<td>" + date.toLocaleString() + "</td>";
-                    html += "<td>" + reg[3] + "</td>";
-                    html += "</tr>";
+                    html += "<tr>"
+                            + "<td>" + reg[0] + "</td>"
+                            + "<td>" + reg[1] + "</td>"
+                            + "<td>" + date.toLocaleString() + "</td>"
+                            + "<td>" + reg[3] + "</td>"
+                            + "</tr>";
                 }
                 html += "</table>";
             } else {
@@ -123,7 +132,7 @@ public class Consulta {
         return html;
     }
 
-    public String getConsultas(String pesquisa, String campo) {
+    public static String getConsultas(String pesquisa, String campo) {
         String html = "";
         try {
             String SQL = "SELECT c.ID, CONCAT(u.NOME,' ',u.SOBRENOME), u.EMAIL, u.CPF, s.NOME, c.ASSUNTO, c.DATA_PEDIDO, c.DATA_AGENDADA "
@@ -153,22 +162,22 @@ public class Consulta {
 
             ArrayList<Object[]> result = Conexao.getQuery(SQL);
             if (result.size() > 0) {
-                html += "<table class='tabela'>";
-                html += "<th></th><th></th>"
+                html += "<table class='tabela'>"
+                        + "<th></th><th></th>"
                         + "<th>USUÁRIO</th> <th>E-MAIL</th> <th>CPF</th> <th>SECRETARIA</th> "
                         + "<th>ASSUNTO</th> <th>DATA AGENDADA</th>";
                 for (Object[] reg : result) {
                     Date date = (Date) reg[6];
-                    html += "<tr>";
-                    html += "<td><a href='?delete&ID=" + reg[0] + "'><img src='../_imagens/excluir.png' alt='excluir' onmouseover='Tip(\"Excluir\")' onmouseout='UnTip()'></a></td>";
-                    html += "<td><a href='editar_consulta.jsp?ID=" + reg[0] + "'><img src='../_imagens/editar.png' alt='editar' onmouseover='Tip(\"Editar\")' onmouseout='UnTip()'></a></td>";
-                    html += "<td>" + reg[1] + "</td>";
-                    html += "<td>" + reg[2] + "</td>";
-                    html += "<td>" + reg[3] + "</td>";
-                    html += "<td>" + reg[4] + "</td>";
-                    html += "<td>" + reg[5] + "</td>";
-                    html += "<td>" + reg[7] + "</td>";
-                    html += "</tr>";
+                    html += "<tr>"
+                            + "<td><a href='?delete&ID=" + reg[0] + "'><img src='../_imagens/excluir.png' alt='excluir' onmouseover='Tip(\"Excluir\")' onmouseout='UnTip()'></a></td>"
+                            + "<td><a href='editar_consulta.jsp?ID=" + reg[0] + "'><img src='../_imagens/editar.png' alt='editar' onmouseover='Tip(\"Editar\")' onmouseout='UnTip()'></a></td>"
+                            + "<td>" + reg[1] + "</td>"
+                            + "<td>" + reg[2] + "</td>"
+                            + "<td>" + reg[3] + "</td>"
+                            + "<td>" + reg[4] + "</td>"
+                            + "<td>" + reg[5] + "</td>"
+                            + "<td>" + reg[7] + "</td>"
+                            + "</tr>";
                 }
                 html += "</table>";
             } else {

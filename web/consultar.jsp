@@ -31,31 +31,23 @@
                 <input type='text' size='59' class='secretariaobs' name='nome' readonly value='<%=usuario.getNome()%>'><br>
                 <p class="secretariaobs">Não é você? <span class="link"><a href="?logoff">Clique aqui.</a></span></p><br>
                 <span class="sobre">Serviços solicitados:</span><br>
-                <%
-                    // Resgatando histórico de solicitações do usuário
-                    Solicitacao solicitacao = new Solicitacao();
-                    out.println(solicitacao.getSolicitacoes(usuario.getId()));
+                <%  // Resgatando histórico de solicitações do usuário
+                    out.println(Solicitacao.getSolicitacoes(usuario.getId()));
                 %>
                 <br>
                 <span class="sobre">Consultas marcadas:</span><br>
-                <%
-                    // Resgatando histórico de consultas agendadas pelo usuário
-                    Consulta consulta = new Consulta();
-                    out.println(consulta.getConsultas(usuario.getId()));
+                <%  // Resgatando histórico de consultas agendadas pelo usuário
+                    out.println(Consulta.getConsultas(usuario.getId()));
                 %>
                 <br>
                 <span class="sobre">Últimas reclamações:</span><br>
-                <%
-                    // Resgatando histórico de reclamações realizadas pelo usuário
-                    Reclamacao reclamacao = new Reclamacao();
-                    out.println(reclamacao.getReclamacoes(usuario.getId()));
+                <%  // Resgatando histórico de reclamações realizadas pelo usuário
+                    out.println(Reclamacao.getReclamacoes(usuario.getId()));
                 %>
                 <br>
                 <span class="sobre">Últimos elogios:</span><br>
-                <%
-                    // Resgatando histórico de elogios realizados pelo usuário
-                    Elogio elogio = new Elogio();
-                    out.println(elogio.getElogios(usuario.getId()));
+                <%  // Resgatando histórico de elogios realizados pelo usuário
+                    out.println(Elogio.getElogios(usuario.getId()));
                 %>
                 <br>
                 <%}%>

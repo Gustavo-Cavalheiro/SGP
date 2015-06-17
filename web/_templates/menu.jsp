@@ -18,6 +18,7 @@
                 <li><a href="<%=menu%>/admin/reclamacoes.jsp">Reclamações</a></li>
                 <li><a href="<%=menu%>/admin/elogios.jsp">Elogios</a></li>
                 <li><a href="<%=menu%>/admin/graficos.jsp">Gráficos</a></li>
+                <li><a href="<%=menu%>/admin/relatorios.jsp">Relatórios</a></li>
             </ul>
         </li>
         <%

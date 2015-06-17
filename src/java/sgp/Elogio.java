@@ -56,9 +56,9 @@ public class Elogio {
 
     public boolean inserir() throws Exception {
         try {
-            String SQL = "INSERT INTO ELOGIOS ";
-            SQL += "(USUARIO, SECRETARIA, MENSAGEM, DATA) ";
-            SQL += "VALUES (?,?,?,?)";
+            String SQL = "INSERT INTO ELOGIOS "
+                    + "(USUARIO, SECRETARIA, MENSAGEM, DATA) "
+                    + "VALUES (?,?,?,?)";
             Connection con = Conexao.getConnection();
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setInt(1, this.usuario);
@@ -73,7 +73,16 @@ public class Elogio {
         }
     }
 
-    public boolean delete(String id) throws Exception {
+    public boolean delete() throws Exception {
+        try {
+            Conexao.executeStatement("DELETE FROM ELOGIOS WHERE ID = " + this.id);
+            return true;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    public static boolean delete(String id) throws Exception {
         try {
             Conexao.executeStatement("DELETE FROM ELOGIOS WHERE ID = " + id);
             return true;
@@ -82,25 +91,25 @@ public class Elogio {
         }
     }
 
-    public String getElogios() {
+    public static String getElogios() {
         return getElogios("", "");
     }
 
-    public String getElogios(int id) {
+    public static String getElogios(int id) {
         String html = "";
         try {
             String SQL = "SELECT s.NOME, e.MENSAGEM, e.DATA FROM ELOGIOS e JOIN SECRETARIAS s ON(e.SECRETARIA = s.ID) WHERE e.USUARIO=" + id + " ORDER BY e.ID";
             ArrayList<Object[]> result = Conexao.getQuery(SQL);
             if (result.size() > 0) {
-                html += "<table class='tabela'>";
-                html += "<th class='tabela'>Secretaria</th><th class='tabela'>Mensagem</th><th class='tabela'>Data do Elogio</th>";
+                html += "<table class='tabela'>"
+                        + "<th class='tabela'>Secretaria</th><th class='tabela'>Mensagem</th><th class='tabela'>Data do Elogio</th>";
                 for (Object[] reg : result) {
                     Date date = (Date) reg[2];
-                    html += "<tr>";
-                    html += "<td>" + reg[0] + "</td>";
-                    html += "<td>" + reg[1] + "</td>";
-                    html += "<td>" + date.toLocaleString() + "</td>";
-                    html += "</tr>";
+                    html += "<tr>"
+                            + "<td>" + reg[0] + "</td>"
+                            + "<td>" + reg[1] + "</td>"
+                            + "<td>" + date.toLocaleString() + "</td>"
+                            + "</tr>";
                 }
                 html += "</table>";
             } else {
@@ -112,7 +121,7 @@ public class Elogio {
         return html;
     }
 
-    public String getElogios(String pesquisa, String campo) {
+    public static String getElogios(String pesquisa, String campo) {
         String html = "";
         try {
             String SQL = "SELECT e.ID, CONCAT(u.NOME,' ',u.SOBRENOME), u.EMAIL, u.CPF, s.NOME, e.MENSAGEM, e.DATA "
@@ -142,21 +151,21 @@ public class Elogio {
 
             ArrayList<Object[]> result = Conexao.getQuery(SQL);
             if (result.size() > 0) {
-                html += "<table class='tabela'>";
-                html += "<th></th><th></th>";
-                html += "<th>USUÁRIO</th> <th>E-MAIL</th> <th>CPF</th> <th>SECRETARIA</th> <th>MENSAGEM</th> <th>DATA DO ELOGIO</th>";
+                html += "<table class='tabela'>"
+                        + "<th></th><th></th>"
+                        + "<th>USUÁRIO</th> <th>E-MAIL</th> <th>CPF</th> <th>SECRETARIA</th> <th>MENSAGEM</th> <th>DATA DO ELOGIO</th>";
                 for (Object[] reg : result) {
                     Date date = (Date) reg[6];
-                    html += "<tr>";
-                    html += "<td><a href='?delete&ID=" + reg[0] + "'><img src='../_imagens/excluir.png' alt='excluir' onmouseover='Tip(\"Excluir\")' onmouseout='UnTip()'></a></td>";
-                    html += "<td><a href='editar_elogio.jsp?ID=" + reg[0] + "'><img src='../_imagens/editar.png' alt='editar' onmouseover='Tip(\"Editar\")' onmouseout='UnTip()'></a></td>";
-                    html += "<td>" + reg[1] + "</td>";
-                    html += "<td>" + reg[2] + "</td>";
-                    html += "<td>" + reg[3] + "</td>";
-                    html += "<td>" + reg[4] + "</td>";
-                    html += "<td>" + reg[5] + "</td>";
-                    html += "<td>" + date.toLocaleString() + "</td>";
-                    html += "</tr>";
+                    html += "<tr>"
+                            + "<td><a href='?delete&ID=" + reg[0] + "'><img src='../_imagens/excluir.png' alt='excluir' onmouseover='Tip(\"Excluir\")' onmouseout='UnTip()'></a></td>"
+                            + "<td><a href='editar_elogio.jsp?ID=" + reg[0] + "'><img src='../_imagens/editar.png' alt='editar' onmouseover='Tip(\"Editar\")' onmouseout='UnTip()'></a></td>"
+                            + "<td>" + reg[1] + "</td>"
+                            + "<td>" + reg[2] + "</td>"
+                            + "<td>" + reg[3] + "</td>"
+                            + "<td>" + reg[4] + "</td>"
+                            + "<td>" + reg[5] + "</td>"
+                            + "<td>" + date.toLocaleString() + "</td>"
+                            + "</tr>";
                 }
                 html += "</table>";
             } else {

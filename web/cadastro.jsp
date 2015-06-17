@@ -143,7 +143,7 @@
                 <span class="sobre">CADASTRO<img src="_imagens/sobre.png" alt="" onmouseover="Tip('Cadastre-se em nosso Sistema de Gerenciamento Político, para marcar consultas e solicitar serviços.')" onmouseout="UnTip()"></span>
                 <br><br>
                 <div id="erro" style="color:red;">
-                    <% // Verificando se existe alguma mensagem de erro à ser exibida
+                    <%  // Verificando se existe alguma mensagem de erro à ser exibida
                         if (!mensagem.equals("")) out.println(mensagem + "<br><br>");
                     %>
                 </div>
@@ -205,7 +205,7 @@
                                 <br><select id="estado" name="estado">
                                     <%  // Populando o elemento select com os dados da tabela ESTADOS
                                         try {
-                                            String query = "SELECT ID,SIGLA FROM ESTADOS";
+                                            String query = "SELECT ID, SIGLA FROM ESTADOS";
                                             String estado = request.getParameter("estado");
                                             for (Object[] reg : Conexao.getQuery(query)) {
                                                 String selected = "";

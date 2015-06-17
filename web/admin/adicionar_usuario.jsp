@@ -145,7 +145,7 @@
                 <span class="sobre">CADASTRAR NOVO USUÁRIO<img src="../_imagens/sobre.png" alt="" onmouseover="Tip('Permite cadastrar um novo usuário, com a possibilidade de conceder-lhe privilégios administrativos.')" onmouseout="UnTip()"></span>
                 <br><br>
                 <div id="erro" style="color:red;">
-                    <% // Verificando se existe alguma mensagem de erro à ser exibida
+                    <%  // Verificando se existe alguma mensagem de erro à ser exibida
                         if (!mensagem.equals("")) out.println(mensagem + "<br><br>");
                     %>
                 </div>

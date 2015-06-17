@@ -29,16 +29,14 @@
 
             // Declaração das variáveis que vão armazenar os dados da consulta
             String id = "";
-            String usuario_id = "";
             String secretaria = "";
             String assunto = "";
             String data = "";
 
-            // Verificando se existem parametros para atualizar os dados do usuário
+            // Verificando se existem parametros para atualizar os dados da consulta
             if (request.getParameter("update") != null) {
                 // Pegando os parametros e removendo espaços desnecessários
                 id = request.getParameter("id");
-                usuario_id = request.getParameter("id");
                 secretaria = request.getParameter("secretaria");
                 assunto = request.getParameter("assunto").trim();
                 data = request.getParameter("data").trim();
@@ -49,16 +47,14 @@
                     try {
                         // Inserindo os dados do novo usuário
                         String SQL = "UPDATE CONSULTAS SET ";
-                        SQL += "USUARIO=?, SECRETARIA=?, ASSUNTO=?, DATA_PEDIDO=?, DATA_AGENDADA=? ";
+                        SQL += "SECRETARIA=?, ASSUNTO=?, DATA_AGENDADA=? ";
                         SQL += "WHERE ID=?";
                         Connection con = Conexao.getConnection();
                         PreparedStatement ps = con.prepareStatement(SQL);
-                        ps.setInt(1, Integer.parseInt(usuario_id));
-                        ps.setInt(2, Integer.parseInt(secretaria));
-                        ps.setString(3, assunto);
-                        ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-                        ps.setString(5, data);
-                        ps.setInt(6, Integer.parseInt(id));
+                        ps.setInt(1, Integer.parseInt(secretaria));
+                        ps.setString(2, assunto);
+                        ps.setString(3, data);
+                        ps.setInt(4, Integer.parseInt(id));
                         ps.execute();
                         ps.close();
 
@@ -78,7 +74,6 @@
                     Statement stmt = Conexao.getConnection().createStatement();
                     ResultSet rs = stmt.executeQuery(SQL);
                     rs.next();
-                    usuario_id = rs.getString("USUARIO");
                     secretaria = rs.getString("SECRETARIA");
                     assunto = rs.getString("ASSUNTO");
                     data = rs.getString("DATA_PEDIDO");

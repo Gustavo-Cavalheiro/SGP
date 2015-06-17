@@ -197,17 +197,15 @@ public class Usuario {
 
     public boolean inserir() throws Exception {
         try {
-            // Verificando se o email do usuário já está cadastrado no site
-            String SQL = "SELECT * FROM USUARIOS WHERE EMAIL='" + this.email + "'";
-            if (Conexao.getQuery(SQL).size() > 0) {
+            // Verificando se o email já está cadastrado no site
+            if (verificaEmail(this.email)) {
                 throw new Exception("O e-mail informado já está cadastrado no site.");
-
             } else {
                 // Inserindo novo usuário
-                SQL = "INSERT INTO USUARIOS ";
-                SQL += "(NOME, SOBRENOME, EMAIL, CPF, ENDERECO, NUMERO, COMPLEMENTO, CEP, ";
-                SQL += "BAIRRO, CIDADE, ESTADO, TELEFONE, CELULAR, SENHA, TIPO, DATA_REGISTRO) ";
-                SQL += "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                String SQL = "INSERT INTO USUARIOS "
+                        + "(NOME, SOBRENOME, EMAIL, CPF, ENDERECO, NUMERO, COMPLEMENTO, CEP, "
+                        + "BAIRRO, CIDADE, ESTADO, TELEFONE, CELULAR, SENHA, TIPO, DATA_REGISTRO) "
+                        + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 Connection con = Conexao.getConnection();
                 PreparedStatement ps = con.prepareStatement(SQL);
                 ps.setString(1, this.nome);
@@ -237,10 +235,10 @@ public class Usuario {
 
     public boolean atualizar() throws Exception {
         try {
-            String SQL = "UPDATE USUARIOS SET ";
-            SQL += "NOME=?, SOBRENOME=?, EMAIL=?, CPF=?, ENDERECO=?, NUMERO=?, COMPLEMENTO=?, CEP=?, ";
-            SQL += "BAIRRO=?, CIDADE=?, ESTADO=?, TELEFONE=?, CELULAR=?, SENHA=?, TIPO=? ";
-            SQL += "WHERE ID=?";
+            String SQL = "UPDATE USUARIOS SET "
+                    + "NOME=?, SOBRENOME=?, EMAIL=?, CPF=?, ENDERECO=?, NUMERO=?, COMPLEMENTO=?, CEP=?, "
+                    + "BAIRRO=?, CIDADE=?, ESTADO=?, TELEFONE=?, CELULAR=?, SENHA=?, TIPO=? "
+                    + "WHERE ID=?";
             Connection con = Conexao.getConnection();
             PreparedStatement ps = con.prepareStatement(SQL);
             ps.setString(1, this.nome);
@@ -267,9 +265,23 @@ public class Usuario {
         }
     }
 
+    public boolean delete() throws Exception {
+        try {
+            if (this.id == 1) throw new Exception("Usuario ANÔNIMO não pode ser exluído!");
+            Conexao.executeStatement("DELETE FROM CONSULTAS WHERE USUARIO = " + this.id);
+            Conexao.executeStatement("DELETE FROM ELOGIOS WHERE USUARIO = " + this.id);
+            Conexao.executeStatement("DELETE FROM RECLAMACOES WHERE USUARIO = " + this.id);
+            Conexao.executeStatement("DELETE FROM SOLICITACOES WHERE USUARIO = " + this.id);
+            Conexao.executeStatement("DELETE FROM USUARIOS WHERE ID = " + this.id);
+            return true;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
     public static boolean delete(int id) throws Exception {
         try {
-            if (id == 1) throw new Exception("Usuario ANÔNIMO não pode ser deletado!");
+            if (id == 1) throw new Exception("Usuario ANÔNIMO não pode ser exluído!");
             Conexao.executeStatement("DELETE FROM CONSULTAS WHERE USUARIO = " + id);
             Conexao.executeStatement("DELETE FROM ELOGIOS WHERE USUARIO = " + id);
             Conexao.executeStatement("DELETE FROM RECLAMACOES WHERE USUARIO = " + id);
@@ -375,21 +387,21 @@ public class Usuario {
 
             ArrayList<Object[]> result = Conexao.getQuery(SQL);
             if (result.size() > 0) {
-                html += "<table class='tabela'>";
-                html += "<th></th><th></th>"
-                        + "<th>ID</th> <th>NOME</th> <th>SOBRENOME</th> <th>E-MAIL</th> <th>CPF</th>"
-                        + "<th>TIPO</th>";
+                html += "<table class='tabela'>"
+                        + "<th></th><th></th>"
+                        + "<th>ID</th> <th>NOME</th> <th>SOBRENOME</th> "
+                        + "<th>E-MAIL</th> <th>CPF</th> <th>TIPO</th>";
                 for (Object[] reg : result) {
-                    html += "<tr>";
-                    html += "<td><a href='?delete&ID=" + reg[0] + "'><img src='../_imagens/excluir.png' alt='excluir' onmouseover='Tip(\"Excluir\")' onmouseout='UnTip()'></a></td>";
-                    html += "<td><a href='editar_usuario.jsp?ID=" + reg[0] + "'><img src='../_imagens/editar.png' alt='editar' onmouseover='Tip(\"Editar\")' onmouseout='UnTip()'></a></td>";
-                    html += "<td>" + reg[0] + "</td>";
-                    html += "<td>" + reg[1] + "</td>";
-                    html += "<td>" + reg[2] + "</td>";
-                    html += "<td>" + reg[3] + "</td>";
-                    html += "<td>" + reg[4] + "</td>";
-                    html += "<td>" + reg[14] + "</td>";
-                    html += "</tr>";
+                    html += "<tr>"
+                            + "<td><a href='?delete&ID=" + reg[0] + "'><img src='../_imagens/excluir.png' alt='excluir' onmouseover='Tip(\"Excluir\")' onmouseout='UnTip()'></a></td>"
+                            + "<td><a href='editar_usuario.jsp?ID=" + reg[0] + "'><img src='../_imagens/editar.png' alt='editar' onmouseover='Tip(\"Editar\")' onmouseout='UnTip()'></a></td>"
+                            + "<td>" + reg[0] + "</td>"
+                            + "<td>" + reg[1] + "</td>"
+                            + "<td>" + reg[2] + "</td>"
+                            + "<td>" + reg[3] + "</td>"
+                            + "<td>" + reg[4] + "</td>"
+                            + "<td>" + reg[14] + "</td>"
+                            + "</tr>";
                 }
                 html += "</table>";
             } else {
